@@ -14,6 +14,8 @@ import {
   MemoryNote,
   SuperlativeAward,
   ClassProject,
+  DeskItem,
+  LabSettings,
 } from '@/types';
 import { isAdminAuthenticated } from '@/lib/auth';
 
@@ -322,6 +324,27 @@ export async function POST(req: Request) {
         const updated = await saveCMSData({
           ...current,
           daily_schedules: schedules,
+        });
+        return NextResponse.json({ success: true, data: updated });
+      }
+
+      case 'update_seating_plan': {
+        const seatingPlan = payload as DeskItem[];
+        const updated = await saveCMSData({
+          ...current,
+          seating_plan: seatingPlan,
+        });
+        return NextResponse.json({ success: true, data: updated });
+      }
+
+      case 'update_lab_settings': {
+        const labSettings = payload as Partial<LabSettings>;
+        const updated = await saveCMSData({
+          ...current,
+          lab_settings: {
+            ...current.lab_settings,
+            ...labSettings,
+          } as LabSettings,
         });
         return NextResponse.json({ success: true, data: updated });
       }

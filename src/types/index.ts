@@ -227,6 +227,34 @@ export interface ClassProject {
   updated_at: string;
 }
 
+export interface LabSeatAssignment {
+  student_id?: string;
+  student_name: string;
+  ip_address: string;
+  pc_name?: string;
+  status?: 'online' | 'offline' | 'maintenance';
+}
+
+export interface DeskItem {
+  id: string;
+  deskNum: number;
+  vlan: number;
+  seatA: LabSeatAssignment;
+  seatB: LabSeatAssignment;
+  notes?: string;
+}
+
+export interface LabSettings {
+  page_title?: string;
+  page_subtitle?: string;
+  server_rack_name?: string;
+  server_rack_desc?: string;
+  board_title?: string;
+  board_desc?: string;
+  podium_title?: string;
+  podium_teacher?: string;
+}
+
 export interface CMSData {
   version: string;
   timestamp: number;
@@ -241,4 +269,6 @@ export interface CMSData {
   memory_notes?: MemoryNote[];
   superlatives?: SuperlativeAward[];
   daily_schedules?: DayScheduleItem[];
+  seating_plan?: DeskItem[];
+  lab_settings?: LabSettings;
 }

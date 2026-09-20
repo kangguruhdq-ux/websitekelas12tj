@@ -26,6 +26,7 @@ import {
   Sparkles,
   Clock,
   FolderGit2,
+  Monitor,
 } from 'lucide-react';
 
 const ADMIN_NAV = [
@@ -33,6 +34,7 @@ const ADMIN_NAV = [
   { name: 'Siswa', href: '/admin/siswa', icon: Users },
   { name: 'Struktur Kelas', href: '/admin/struktur', icon: Network },
   { name: 'Projects TKJ', href: '/admin/projects', icon: FolderGit2 },
+  { name: 'Denah & Lab', href: '/admin/denah', icon: Monitor },
   { name: 'Jadwal & Piket', href: '/admin/jadwal', icon: Clock },
   { name: 'Pengumuman', href: '/admin/pengumuman', icon: Bell },
   { name: 'Agenda', href: '/admin/agenda', icon: Calendar },

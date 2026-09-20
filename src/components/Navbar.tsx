@@ -573,32 +573,6 @@ export default function Navbar() {
                     <span>TikTok</span>
                   </a>
                 </div>
-
-                {/* Portal Admin Mobile Access */}
-                <Link
-                  href="/admin"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center justify-between p-3 rounded-xl border font-semibold text-xs transition-all"
-                  style={{
-                    backgroundColor: 'var(--bg-card)',
-                    borderColor: 'var(--border-theme)',
-                    color: 'var(--color-theme)',
-                  }}
-                >
-                  <div className="flex items-center gap-2.5">
-                    <Lock className="w-4 h-4" style={{ color: 'var(--color-theme)' }} />
-                    <span>Portal Admin Kelas</span>
-                  </div>
-                  <span
-                    className="text-[10px] px-2 py-0.5 rounded-md font-mono uppercase tracking-wider"
-                    style={{
-                      backgroundColor: 'var(--color-theme-muted)',
-                      color: 'var(--color-theme)',
-                    }}
-                  >
-                    Masuk
-                  </span>
-                </Link>
               </div>
             </div>
           </motion.div>

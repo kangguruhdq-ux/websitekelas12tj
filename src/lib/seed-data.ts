@@ -12,6 +12,8 @@ import {
   DayScheduleItem,
   ClassMemoryPhoto,
   ClassProject,
+  DeskItem,
+  LabSettings,
 } from '@/types';
 
 // Helper to generate consistent avatar placeholders with cyber tech gradients
@@ -1278,6 +1280,43 @@ export const INITIAL_SETTINGS: SiteSettings = {
   updated_at: '2026-09-20T00:00:00Z',
 };
 
+export const INITIAL_LAB_SETTINGS: LabSettings = {
+  page_title: 'Denah Meja Kelas & Lab XII TKJ',
+  page_subtitle: 'Visualisasi penataan tempat duduk praktikum dan workstation komputer jaringan 34 siswa keluarga besar XII TKJ.',
+  server_rack_name: 'Core Rack Server',
+  server_rack_desc: 'MikroTik CCR + 48P Switch',
+  board_title: 'PAPAN TULIS & LAYAR PROYEKTOR UTAMA',
+  board_desc: 'Area Pengajaran & Presentasi Praktik Jaringan',
+  podium_title: 'Podium Pembimbing',
+  podium_teacher: 'Bu Febriyana, S.T.',
+};
+
+export const INITIAL_SEATING_PLAN: DeskItem[] = Array.from({ length: 17 }, (_, idx) => {
+  const deskNum = idx + 1;
+  const s1 = INITIAL_STUDENTS[idx * 2];
+  const s2 = INITIAL_STUDENTS[idx * 2 + 1];
+  return {
+    id: `desk-${deskNum}`,
+    deskNum,
+    vlan: 10 + deskNum,
+    seatA: {
+      student_id: s1?.id || '',
+      student_name: s1?.name || `Siswa ${idx * 2 + 1}`,
+      ip_address: `192.168.27.${deskNum * 2}`,
+      pc_name: `PC-TJ-${String(deskNum).padStart(2, '0')}A`,
+      status: 'online' as const,
+    },
+    seatB: {
+      student_id: s2?.id || '',
+      student_name: s2?.name || `Siswa ${idx * 2 + 2}`,
+      ip_address: `192.168.27.${deskNum * 2 + 1}`,
+      pc_name: `PC-TJ-${String(deskNum).padStart(2, '0')}B`,
+      status: 'online' as const,
+    },
+    notes: `Workstation Praktik Meja #${deskNum} (VLAN ${10 + deskNum})`,
+  };
+});
+
 export const INITIAL_CMS_DATA: CMSData = {
   version: 'tkj_cms_v1',
   timestamp: 1758355200000,
@@ -1292,4 +1331,6 @@ export const INITIAL_CMS_DATA: CMSData = {
   memory_notes: INITIAL_MEMORY_NOTES,
   superlatives: INITIAL_SUPERLATIVES,
   daily_schedules: INITIAL_DAILY_SCHEDULES,
+  seating_plan: INITIAL_SEATING_PLAN,
+  lab_settings: INITIAL_LAB_SETTINGS,
 };

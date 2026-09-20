@@ -14,6 +14,8 @@ import {
   SuperlativeAward,
   DayScheduleItem,
   ClassProject,
+  DeskItem,
+  LabSettings,
 } from '@/types';
 import { INITIAL_CMS_DATA } from '@/lib/seed-data';
 
@@ -36,12 +38,16 @@ interface ClassDataContextType {
   memoryNotes: MemoryNote[];
   superlatives: SuperlativeAward[];
   dailySchedules: DayScheduleItem[];
+  seatingPlan: DeskItem[];
+  labSettings: LabSettings;
   isLoading: boolean;
   isSyncing: boolean;
   hasHydrated: boolean;
   error: string | null;
   lastSynced: number | null;
   // Actions
+  updateSeatingPlan: (plan: DeskItem[]) => Promise<boolean>;
+  updateLabSettings: (settings: Partial<LabSettings>) => Promise<boolean>;
   upsertStudent: (student: Student) => Promise<boolean>;
   deleteStudent: (id: string) => Promise<boolean>;
   upsertRole: (role: ClassRole) => Promise<boolean>;
@@ -371,6 +377,16 @@ export function ClassDataProvider({
     [runMutation]
   );
 
+  const updateSeatingPlan = useCallback(
+    async (plan: DeskItem[]) => runMutation('update_seating_plan', plan),
+    [runMutation]
+  );
+
+  const updateLabSettings = useCallback(
+    async (settings: Partial<LabSettings>) => runMutation('update_lab_settings', settings),
+    [runMutation]
+  );
+
   return (
     <ClassDataContext.Provider
       value={{
@@ -386,11 +402,15 @@ export function ClassDataProvider({
         memoryNotes: data.memory_notes || [],
         superlatives: data.superlatives || [],
         dailySchedules: data.daily_schedules || INITIAL_CMS_DATA.daily_schedules || [],
+        seatingPlan: data.seating_plan || INITIAL_CMS_DATA.seating_plan || [],
+        labSettings: data.lab_settings || INITIAL_CMS_DATA.lab_settings!,
         isLoading,
         isSyncing,
         hasHydrated,
         error,
         lastSynced,
+        updateSeatingPlan,
+        updateLabSettings,
         upsertStudent,
         deleteStudent,
         upsertRole,

@@ -81,6 +81,11 @@ export function selfHealCMSData(raw: Partial<CMSData> | null | undefined): CMSDa
   }));
 
   const projects = Array.isArray(raw.projects) ? raw.projects : (INITIAL_CMS_DATA.projects || []);
+  const seating_plan = Array.isArray(raw.seating_plan) ? raw.seating_plan : (INITIAL_CMS_DATA.seating_plan || []);
+  const lab_settings = {
+    ...INITIAL_CMS_DATA.lab_settings,
+    ...(raw.lab_settings || {}),
+  };
 
   const settings = {
     ...INITIAL_CMS_DATA.settings,
@@ -101,6 +106,8 @@ export function selfHealCMSData(raw: Partial<CMSData> | null | undefined): CMSDa
     memory_notes,
     superlatives,
     daily_schedules,
+    seating_plan,
+    lab_settings,
   };
 }
 
