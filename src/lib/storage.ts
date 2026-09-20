@@ -3,6 +3,7 @@ import path from 'path';
 import { CMSData } from '@/types';
 import { INITIAL_CMS_DATA, INITIAL_STUDENTS, INITIAL_ROLES } from './seed-data';
 import { supabaseClient, isSupabaseConfigured } from './supabase';
+import { loadFromNeon, saveToNeon, isNeonConfigured } from './neon';
 
 const DATA_DIR = path.join(process.cwd(), '.data');
 const DATA_FILE = path.join(DATA_DIR, 'class_cms_data.json');
@@ -202,14 +203,28 @@ export async function getCMSData(): Promise<CMSData> {
     return memoryCache;
   }
 
-  // 2. Try Supabase if configured
+  // 2. Try Neon PostgreSQL if configured (Primary for Vercel)
+  if (isNeonConfigured) {
+    try {
+      const neonData = await loadFromNeon();
+      if (neonData && neonData.students && neonData.students.length >= 34) {
+        const healed = selfHealCMSData(neonData);
+        memoryCache = healed;
+        return healed;
+      }
+    } catch (neonErr) {
+      console.warn('Neon DB load error, falling back:', neonErr);
+    }
+  }
+
+  // 3. Try Supabase if configured
   const supabaseData = await loadFromSupabase();
   if (supabaseData && supabaseData.students.length >= 34) {
     memoryCache = supabaseData;
     return supabaseData;
   }
 
-  // 3. Try reading local atomic file
+  // 4. Try reading local atomic file
   try {
     ensureDataDir();
     if (fs.existsSync(DATA_FILE)) {
@@ -217,16 +232,27 @@ export async function getCMSData(): Promise<CMSData> {
       const parsed = JSON.parse(content);
       const healed = selfHealCMSData(parsed);
       memoryCache = healed;
+
+      // If Neon is configured but was empty, seed it now
+      if (isNeonConfigured) {
+        saveToNeon(healed).catch((e) => console.warn('Neon background seed error:', e));
+      }
+
       return healed;
     }
   } catch (err) {
     console.warn('Local data file read error:', err);
   }
 
-  // 4. Default self-healing from INITIAL_CMS_DATA
+  // 5. Default self-healing from INITIAL_CMS_DATA
   const initialized = selfHealCMSData(INITIAL_CMS_DATA);
   memoryCache = initialized;
   writeDataAtomic(initialized);
+
+  if (isNeonConfigured) {
+    saveToNeon(initialized).catch((e) => console.warn('Neon init save error:', e));
+  }
+
   return initialized;
 }
 
@@ -244,8 +270,15 @@ export async function saveCMSData(data: CMSData): Promise<CMSData> {
   // Self-heal validation check
   const validated = selfHealCMSData(updatedData);
 
-  // Write atomically
+  // Write atomically to local disk
   writeDataAtomic(validated);
+
+  // Sync to Neon PostgreSQL (primary for Vercel)
+  if (isNeonConfigured) {
+    saveToNeon(validated).catch((err) => {
+      console.warn('Neon DB background sync error:', err);
+    });
+  }
 
   // Trigger non-blocking Supabase sync if configured
   syncToSupabase(validated).catch((err) => {
