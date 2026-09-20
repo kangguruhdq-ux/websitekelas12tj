@@ -1,33 +1,21 @@
 import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
+import { getAdminSession } from '@/lib/auth';
 
 export async function GET() {
   try {
-    const cookieStore = await cookies();
-    const session = cookieStore.get('admin_session');
-
-    if (!session?.value) {
+    const session = await getAdminSession();
+    if (!session) {
       return NextResponse.json({ authenticated: false }, { status: 401 });
     }
-
-    try {
-      const decoded = JSON.parse(Buffer.from(session.value, 'base64').toString('utf8'));
-      if (decoded.role === 'ADMIN') {
-        return NextResponse.json({
-          authenticated: true,
-          user: {
-            id: 'admin-1',
-            username: decoded.user,
-            role: 'ADMIN',
-            name: 'Administrator XII TKJ',
-          },
-        });
-      }
-    } catch {
-      // Invalid token
-    }
-
-    return NextResponse.json({ authenticated: false }, { status: 401 });
+    return NextResponse.json({
+      authenticated: true,
+      user: {
+        id: 'admin-1',
+        username: session.user,
+        role: 'ADMIN',
+        name: 'Administrator XII TKJ',
+      },
+    });
   } catch (err: any) {
     return NextResponse.json({ authenticated: false, error: err.message }, { status: 500 });
   }

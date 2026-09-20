@@ -1,8 +1,13 @@
 import { NextResponse } from 'next/server';
 import { getCMSData, saveCMSData } from '@/lib/storage';
+import { isAdminAuthenticated } from '@/lib/auth';
 
 export async function POST(req: Request) {
   try {
+    if (!(await isAdminAuthenticated())) {
+      return NextResponse.json({ success: false, error: 'Sesi admin tidak valid.' }, { status: 401 });
+    }
+
     const { currentPassword, newPassword } = await req.json();
 
     if (!newPassword || newPassword.trim().length < 4) {

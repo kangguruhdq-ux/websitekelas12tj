@@ -58,6 +58,12 @@ interface ClassDataContextType {
   updateDailySchedules: (schedules: DayScheduleItem[]) => Promise<boolean>;
   refreshData: (force?: boolean) => Promise<void>;
   resetSeedData: () => Promise<boolean>;
+  upsertTimeCapsule: (item: TimeCapsuleMessage) => Promise<boolean>;
+  deleteTimeCapsule: (id: string) => Promise<boolean>;
+  upsertMemoryNote: (item: MemoryNote) => Promise<boolean>;
+  deleteMemoryNote: (id: string) => Promise<boolean>;
+  upsertSuperlative: (item: SuperlativeAward) => Promise<boolean>;
+  deleteSuperlative: (id: string) => Promise<boolean>;
 }
 
 const ClassDataContext = createContext<ClassDataContextType | undefined>(undefined);
@@ -333,6 +339,36 @@ export function ClassDataProvider({
     [runMutation]
   );
 
+  const upsertTimeCapsule = useCallback(
+    async (item: TimeCapsuleMessage) => runMutation('upsert_time_capsule', item),
+    [runMutation]
+  );
+
+  const deleteTimeCapsule = useCallback(
+    async (id: string) => runMutation('delete_time_capsule', { id }),
+    [runMutation]
+  );
+
+  const upsertMemoryNote = useCallback(
+    async (item: MemoryNote) => runMutation('upsert_memory_note', item),
+    [runMutation]
+  );
+
+  const deleteMemoryNote = useCallback(
+    async (id: string) => runMutation('delete_memory_note', { id }),
+    [runMutation]
+  );
+
+  const upsertSuperlative = useCallback(
+    async (item: SuperlativeAward) => runMutation('upsert_superlative', item),
+    [runMutation]
+  );
+
+  const deleteSuperlative = useCallback(
+    async (id: string) => runMutation('delete_superlative', { id }),
+    [runMutation]
+  );
+
   return (
     <ClassDataContext.Provider
       value={{
@@ -370,6 +406,12 @@ export function ClassDataProvider({
         updateDailySchedules,
         refreshData,
         resetSeedData,
+        upsertTimeCapsule,
+        deleteTimeCapsule,
+        upsertMemoryNote,
+        deleteMemoryNote,
+        upsertSuperlative,
+        deleteSuperlative,
       }}
     >
       {children}

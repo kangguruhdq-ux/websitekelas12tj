@@ -159,9 +159,6 @@ export default function AdminUsersPage() {
                 {showCurrent ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
-            <p className="text-[11px] text-[#9e9a8d] mt-1">
-              (Default bawaan sistem: <code className="text-[#f2eb87]">admin123</code> atau <code className="text-[#f2eb87]">admin</code>)
-            </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

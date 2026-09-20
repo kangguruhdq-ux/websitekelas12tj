@@ -101,7 +101,7 @@ export default function AdminLoginPage() {
                 <input
                   type="text"
                   required
-                  placeholder="admin"
+                  placeholder="Masukkan username"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   className="w-full pl-10 pr-4 py-2.5 rounded-xl text-xs bg-[#161512] border border-[#f5f1ca]/15 text-[#f5f1ca] placeholder-[#9e9a8d]/60 focus:outline-none focus:border-[#f2eb87] transition-all"
@@ -142,12 +142,6 @@ export default function AdminLoginPage() {
             </button>
           </form>
 
-          {/* Quick Credential Hint */}
-          <div className="mt-6 pt-5 border-t border-[#f5f1ca]/10 text-center text-xs text-[#9e9a8d]">
-            <p className="font-mono text-[11px] bg-[#161512] p-2 rounded-xl border border-[#f5f1ca]/10">
-              Default Login: <strong className="text-[#f2eb87]">admin</strong> / Password: <strong className="text-[#f2eb87]">admin123</strong>
-            </p>
-          </div>
         </div>
 
         <div className="text-center mt-6">

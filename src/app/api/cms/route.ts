@@ -1,7 +1,20 @@
 import { NextResponse } from 'next/server';
 import { getCMSData, saveCMSData } from '@/lib/storage';
 import { INITIAL_CMS_DATA } from '@/lib/seed-data';
-import { CMSData, Student, ClassRole, Announcement, EventItem, GalleryItem, SiteSettings, DayScheduleItem } from '@/types';
+import {
+  CMSData,
+  Student,
+  ClassRole,
+  Announcement,
+  EventItem,
+  GalleryItem,
+  SiteSettings,
+  DayScheduleItem,
+  TimeCapsuleMessage,
+  MemoryNote,
+  SuperlativeAward,
+} from '@/types';
+import { isAdminAuthenticated } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
@@ -29,6 +42,13 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
     const { action, payload } = body;
+
+    // Public visitors may submit memories, capsules, and votes. Every content
+    // mutation that changes the managed website requires an admin session.
+    const publicActions = new Set(['add_time_capsule', 'add_memory_note', 'like_memory_note', 'vote_superlative']);
+    if (!publicActions.has(action) && !(await isAdminAuthenticated())) {
+      return NextResponse.json({ success: false, error: 'Sesi admin tidak valid.' }, { status: 401 });
+    }
 
     const current = await getCMSData();
 
@@ -157,12 +177,50 @@ export async function POST(req: Request) {
         return NextResponse.json({ success: true, data: updated });
       }
 
+      case 'upsert_time_capsule': {
+        const item = payload as TimeCapsuleMessage;
+        const existing = current.time_capsules || [];
+        const next = existing.some((entry) => entry.id === item.id)
+          ? existing.map((entry) => (entry.id === item.id ? item : entry))
+          : [item, ...existing];
+        const updated = await saveCMSData({ ...current, time_capsules: next });
+        return NextResponse.json({ success: true, data: updated });
+      }
+
+      case 'delete_time_capsule': {
+        const { id } = payload as { id: string };
+        const updated = await saveCMSData({
+          ...current,
+          time_capsules: (current.time_capsules || []).filter((item) => item.id !== id),
+        });
+        return NextResponse.json({ success: true, data: updated });
+      }
+
       case 'add_memory_note': {
         const note = payload;
         const existing = current.memory_notes || [];
         const updated = await saveCMSData({
           ...current,
           memory_notes: [note, ...existing],
+        });
+        return NextResponse.json({ success: true, data: updated });
+      }
+
+      case 'upsert_memory_note': {
+        const item = payload as MemoryNote;
+        const existing = current.memory_notes || [];
+        const next = existing.some((entry) => entry.id === item.id)
+          ? existing.map((entry) => (entry.id === item.id ? item : entry))
+          : [item, ...existing];
+        const updated = await saveCMSData({ ...current, memory_notes: next });
+        return NextResponse.json({ success: true, data: updated });
+      }
+
+      case 'delete_memory_note': {
+        const { id } = payload as { id: string };
+        const updated = await saveCMSData({
+          ...current,
+          memory_notes: (current.memory_notes || []).filter((item) => item.id !== id),
         });
         return NextResponse.json({ success: true, data: updated });
       }
@@ -185,6 +243,25 @@ export async function POST(req: Request) {
         const updated = await saveCMSData({
           ...current,
           superlatives: updatedSuperlatives,
+        });
+        return NextResponse.json({ success: true, data: updated });
+      }
+
+      case 'upsert_superlative': {
+        const item = payload as SuperlativeAward;
+        const existing = current.superlatives || [];
+        const next = existing.some((entry) => entry.id === item.id)
+          ? existing.map((entry) => (entry.id === item.id ? item : entry))
+          : [item, ...existing];
+        const updated = await saveCMSData({ ...current, superlatives: next });
+        return NextResponse.json({ success: true, data: updated });
+      }
+
+      case 'delete_superlative': {
+        const { id } = payload as { id: string };
+        const updated = await saveCMSData({
+          ...current,
+          superlatives: (current.superlatives || []).filter((item) => item.id !== id),
         });
         return NextResponse.json({ success: true, data: updated });
       }

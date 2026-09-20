@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { getCMSData } from '@/lib/storage';
+import { ADMIN_SESSION_COOKIE, ADMIN_SESSION_MAX_AGE, createAdminSession } from '@/lib/auth';
 
 export async function POST(req: Request) {
   try {
@@ -17,19 +18,13 @@ export async function POST(req: Request) {
 
     if (username === adminUser && isValidPass) {
       const cookieStore = await cookies();
-      const sessionToken = Buffer.from(
-        JSON.stringify({
-          user: username,
-          role: 'ADMIN',
-          created: Date.now(),
-        })
-      ).toString('base64');
+      const sessionToken = createAdminSession(username);
 
-      cookieStore.set('admin_session', sessionToken, {
+      cookieStore.set(ADMIN_SESSION_COOKIE, sessionToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
-        maxAge: 60 * 60 * 24 * 7, // 7 days
+        maxAge: ADMIN_SESSION_MAX_AGE,
         path: '/',
       });
 

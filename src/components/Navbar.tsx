@@ -397,6 +397,23 @@ export default function Navbar() {
                   </div>
                 </div>
               ))}
+
+              {/* Portal Admin Mobile Access */}
+              <div className="pt-3 border-t border-[#f5f1ca]/10">
+                <Link
+                  href="/admin"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center justify-between p-3 rounded-xl bg-[#1f1d19] border border-[#f2eb87]/30 text-[#f2eb87] font-semibold text-xs transition-all hover:bg-[#f2eb87]/15 active:scale-[0.99]"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <Lock className="w-4 h-4 text-[#f2eb87]" />
+                    <span>Portal Admin Kelas</span>
+                  </div>
+                  <span className="text-[10px] px-2 py-0.5 rounded-md bg-[#f2eb87]/20 text-[#f2eb87] font-mono uppercase tracking-wider">
+                    Masuk
+                  </span>
+                </Link>
+              </div>
             </div>
           </motion.div>
         )}
