@@ -26,12 +26,15 @@ export const metadata: Metadata = {
   },
 };
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const initialData = await getCMSData();
+  const initialData = await getCMSData(true);
 
   return (
     <html lang="id" className="dark scroll-smooth" suppressHydrationWarning>

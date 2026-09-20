@@ -113,9 +113,12 @@ export function ClassDataProvider({
 
     globalFetchPromise = (async () => {
       try {
-        const res = await fetch('/api/cms', {
+        const res = await fetch(`/api/cms?t=${Date.now()}`, {
           cache: 'no-store',
-          headers: { 'Cache-Control': 'no-cache' },
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            Pragma: 'no-cache',
+          },
         });
 
         if (!res.ok) {
@@ -140,7 +143,7 @@ export function ClassDataProvider({
   }, []);
 
   /**
-   * Hydration Guard and Auto-Heal Sync
+   * Safe data sync from server
    */
   const refreshData = useCallback(
     async (force: boolean = false) => {
@@ -150,42 +153,9 @@ export function ClassDataProvider({
       try {
         const serverData = await fetchCMSDataShared();
 
-        if (serverData) {
-          const currentLocal = stateRef.current;
-
-          // HYDRATION GUARD:
-          // Check if server data is valid. Never overwrite client state with empty/corrupted data.
-          const serverValid =
-            Array.isArray(serverData.students) &&
-            serverData.students.length >= 34 &&
-            Array.isArray(serverData.roles) &&
-            serverData.roles.length >= 18;
-
-          if (serverValid) {
-            // Check timestamps: if local has unsynced newer changes, resolve smartly
-            if (force || !currentLocal.timestamp || serverData.timestamp >= currentLocal.timestamp) {
-              updateDataSafely(serverData);
-              setLastSynced(Date.now());
-            } else {
-              // Local is ahead; send auto-heal back to server
-              console.log('Local state ahead of server, sending auto-heal sync...');
-              fetch('/api/cms', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ action: 'sync_all', payload: currentLocal }),
-              }).catch((e) => console.warn('Auto-heal sync error:', e));
-            }
-          } else {
-            // Server returned incomplete data! Auto-heal server from valid local data or seed
-            console.warn('Server data below minimum standard. Triggering auto-heal repair...');
-            const healPayload = currentLocal.students.length >= 34 ? currentLocal : INITIAL_CMS_DATA;
-            await fetch('/api/cms', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ action: 'sync_all', payload: healPayload }),
-            });
-            updateDataSafely(healPayload);
-          }
+        if (serverData && Array.isArray(serverData.students)) {
+          updateDataSafely(serverData);
+          setLastSynced(Date.now());
         }
       } catch (err: any) {
         console.error('Refresh error:', err);
@@ -202,25 +172,31 @@ export function ClassDataProvider({
   useEffect(() => {
     setHasHydrated(true);
 
-    try {
+    if (initialData && Array.isArray(initialData.students)) {
+      stateRef.current = initialData;
       if (typeof window !== 'undefined') {
+        try {
+          localStorage.setItem(APP_STORAGE_KEY, JSON.stringify(initialData));
+        } catch (e) {
+          console.warn('LocalStorage save error:', e);
+        }
+      }
+    } else if (typeof window !== 'undefined') {
+      try {
         const cached = localStorage.getItem(APP_STORAGE_KEY);
         if (cached) {
           const parsed = JSON.parse(cached);
-          if (parsed && Array.isArray(parsed.students) && parsed.students.length >= 34) {
-            const currentTs = (initialData || INITIAL_CMS_DATA).timestamp || 0;
-            if (parsed.timestamp && parsed.timestamp > currentTs) {
-              setData(parsed);
-              stateRef.current = parsed;
-            }
+          if (parsed && Array.isArray(parsed.students)) {
+            setData(parsed);
+            stateRef.current = parsed;
           }
         }
+      } catch (e) {
+        console.warn('LocalStorage hydrate error:', e);
       }
-    } catch (e) {
-      console.warn('LocalStorage hydrate error:', e);
     }
 
-    refreshData(false);
+    refreshData(true);
   }, [refreshData, initialData]);
 
   // Generic POST action runner with optimistic update & rollback

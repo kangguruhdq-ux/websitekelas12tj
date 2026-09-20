@@ -9,9 +9,10 @@ const DATA_DIR = path.join(process.cwd(), '.data');
 const DATA_FILE = path.join(DATA_DIR, 'class_cms_data.json');
 const DATA_TMP_FILE = path.join(DATA_DIR, 'class_cms_data.tmp');
 
-// In-memory cache singleton
+// In-memory cache singleton with short TTL
 let memoryCache: CMSData | null = null;
-let isWriting = false;
+let lastCacheTime = 0;
+const CACHE_TTL_MS = 2500; // 2.5s cache to avoid excessive DB reads in parallel render tree
 
 /**
  * Ensure data directory exists
@@ -36,68 +37,42 @@ function writeDataAtomic(data: CMSData): boolean {
     fs.writeFileSync(DATA_TMP_FILE, serialized, 'utf8');
     fs.renameSync(DATA_TMP_FILE, DATA_FILE);
     memoryCache = data;
+    lastCacheTime = Date.now();
     return true;
   } catch (err) {
     console.error('Error writing atomic data file:', err);
     memoryCache = data;
+    lastCacheTime = Date.now();
     return false;
   }
 }
 
 /**
- * Self-healing and validation guard on dataset
+ * Safe schema normalizer that NEVER destroys or overwrites user modifications
  */
-function selfHealCMSData(raw: Partial<CMSData> | null): CMSData {
-  const currentStudents = Array.isArray(raw?.students) ? raw!.students : [];
-  const currentRoles = Array.isArray(raw?.roles) ? raw!.roles : [];
-  const currentAnnouncements = Array.isArray(raw?.announcements) ? raw!.announcements : [];
-  const currentEvents = Array.isArray(raw?.events) ? raw!.events : [];
-  const currentGallery = Array.isArray(raw?.gallery) ? raw!.gallery : [];
-  const currentTimeCapsules = Array.isArray(raw?.time_capsules) ? raw!.time_capsules : INITIAL_CMS_DATA.time_capsules;
-  const currentMemoryNotes = Array.isArray(raw?.memory_notes) ? raw!.memory_notes : INITIAL_CMS_DATA.memory_notes;
-  const currentSuperlatives = Array.isArray(raw?.superlatives) ? raw!.superlatives : INITIAL_CMS_DATA.superlatives;
-  const currentSettings = raw?.settings && typeof raw.settings === 'object' ? raw.settings : INITIAL_CMS_DATA.settings;
-
-  let needsHeal = false;
-
-  // Check 1: Ensure all 34 initial students exist (by name or ID)
-  const studentMap = new Map(currentStudents.map((s) => [s.name.toLowerCase().trim(), s]));
-  const mergedStudents = [...currentStudents];
-
-  for (const seedStudent of INITIAL_STUDENTS) {
-    const existing = studentMap.get(seedStudent.name.toLowerCase().trim());
-    if (!existing) {
-      mergedStudents.push(seedStudent);
-      needsHeal = true;
-    }
+export function selfHealCMSData(raw: Partial<CMSData> | null | undefined): CMSData {
+  if (!raw) {
+    return {
+      ...INITIAL_CMS_DATA,
+      timestamp: Date.now(),
+    };
   }
 
-  // Check 2: Ensure all initial roles exist
-  const roleMap = new Map(currentRoles.map((r) => [r.role_name.toLowerCase().trim(), r]));
-  const mergedRoles = [...currentRoles];
+  // Preserve user collections (even if empty); only seed if completely missing/undefined
+  const students = Array.isArray(raw.students) ? raw.students : INITIAL_STUDENTS;
+  const roles = Array.isArray(raw.roles) ? raw.roles : INITIAL_ROLES;
+  const announcements = Array.isArray(raw.announcements) ? raw.announcements : (INITIAL_CMS_DATA.announcements || []);
+  const events = Array.isArray(raw.events) ? raw.events : (INITIAL_CMS_DATA.events || []);
+  const gallery = Array.isArray(raw.gallery) ? raw.gallery : (INITIAL_CMS_DATA.gallery || []);
+  const time_capsules = Array.isArray(raw.time_capsules) ? raw.time_capsules : (INITIAL_CMS_DATA.time_capsules || []);
+  const memory_notes = Array.isArray(raw.memory_notes) ? raw.memory_notes : (INITIAL_CMS_DATA.memory_notes || []);
+  const superlatives = Array.isArray(raw.superlatives) ? raw.superlatives : (INITIAL_CMS_DATA.superlatives || []);
 
-  for (const seedRole of INITIAL_ROLES) {
-    const existing = roleMap.get(seedRole.role_name.toLowerCase().trim());
-    if (!existing) {
-      mergedRoles.push(seedRole);
-      needsHeal = true;
-    }
-  }
+  const rawSchedules = Array.isArray(raw.daily_schedules)
+    ? raw.daily_schedules
+    : INITIAL_CMS_DATA.daily_schedules || [];
 
-  // Check 3: Minimum counts
-  if (mergedStudents.length < 34) {
-    needsHeal = true;
-  }
-
-  if (!raw?.time_capsules || !raw?.memory_notes || !raw?.superlatives) {
-    needsHeal = true;
-  }
-
-  const normalizedSchedules = (
-    Array.isArray(raw?.daily_schedules) && raw!.daily_schedules.length > 0
-      ? raw!.daily_schedules
-      : INITIAL_CMS_DATA.daily_schedules || []
-  ).map((day) => ({
+  const daily_schedules = rawSchedules.map((day) => ({
     ...day,
     subjects: (day.subjects || []).map((sub) => ({
       ...sub,
@@ -105,29 +80,25 @@ function selfHealCMSData(raw: Partial<CMSData> | null): CMSData {
     })),
   }));
 
-  const healed: CMSData = {
-    version: 'tkj_cms_v1',
-    timestamp: Date.now(),
-    students: mergedStudents.length >= 34 ? mergedStudents : INITIAL_STUDENTS,
-    roles: mergedRoles.length >= 18 ? mergedRoles : INITIAL_ROLES,
-    announcements: currentAnnouncements.length > 0 ? currentAnnouncements : INITIAL_CMS_DATA.announcements,
-    events: currentEvents.length > 0 ? currentEvents : INITIAL_CMS_DATA.events,
-    gallery: currentGallery.length > 0 ? currentGallery : INITIAL_CMS_DATA.gallery,
-    settings: {
-      ...INITIAL_CMS_DATA.settings,
-      ...currentSettings,
-    },
-    time_capsules: currentTimeCapsules,
-    memory_notes: currentMemoryNotes,
-    superlatives: currentSuperlatives,
-    daily_schedules: normalizedSchedules,
+  const settings = {
+    ...INITIAL_CMS_DATA.settings,
+    ...(raw.settings || {}),
   };
 
-  if (needsHeal || !raw) {
-    writeDataAtomic(healed);
-  }
-
-  return healed;
+  return {
+    version: 'tkj_cms_v1',
+    timestamp: typeof raw.timestamp === 'number' ? raw.timestamp : Date.now(),
+    students,
+    roles,
+    announcements,
+    events,
+    gallery,
+    settings,
+    time_capsules,
+    memory_notes,
+    superlatives,
+    daily_schedules,
+  };
 }
 
 /**
@@ -154,14 +125,11 @@ async function loadFromSupabase(): Promise<CMSData | null> {
     ]);
 
     if (errStudents || errRoles) {
-      console.warn('Supabase query error, falling back to local storage:', errStudents || errRoles);
+      console.warn('Supabase query error, falling back:', errStudents || errRoles);
       return null;
     }
 
-    if (!students || students.length < 34) {
-      console.log('Supabase data incomplete, auto-healing...');
-      return null;
-    }
+    if (!students) return null;
 
     return {
       version: 'tkj_cms_v1',
@@ -196,21 +164,35 @@ async function syncToSupabase(data: CMSData): Promise<void> {
 
 /**
  * Main function to retrieve CMS Data with multi-tier resilience
+ * @param forceRefresh - If true, bypasses the in-memory cache and loads fresh data from DB/file
  */
-export async function getCMSData(): Promise<CMSData> {
-  // 1. If memoryCache is already fresh, return it
-  if (memoryCache && memoryCache.students.length >= 34) {
+export async function getCMSData(forceRefresh: boolean = false): Promise<CMSData> {
+  const now = Date.now();
+
+  // 1. If memoryCache is already fresh and within TTL, return it
+  if (!forceRefresh && memoryCache && (now - lastCacheTime < CACHE_TTL_MS)) {
     return memoryCache;
   }
 
-  // 2. Try Neon PostgreSQL if configured (Primary for Vercel)
+  // 2. Try Neon PostgreSQL if configured (Primary for Vercel & Production)
   if (isNeonConfigured) {
     try {
       const neonData = await loadFromNeon();
-      if (neonData && neonData.students && neonData.students.length >= 34) {
-        const healed = selfHealCMSData(neonData);
-        memoryCache = healed;
-        return healed;
+      if (neonData && Array.isArray(neonData.students)) {
+        const validated = selfHealCMSData(neonData);
+        memoryCache = validated;
+        lastCacheTime = Date.now();
+        return validated;
+      }
+
+      // If Neon is connected but table is empty, seed it once
+      if (neonData === null) {
+        console.log('Neon DB is empty; initializing seed data...');
+        const initial = selfHealCMSData(INITIAL_CMS_DATA);
+        await saveToNeon(initial);
+        memoryCache = initial;
+        lastCacheTime = Date.now();
+        return initial;
       }
     } catch (neonErr) {
       console.warn('Neon DB load error, falling back:', neonErr);
@@ -218,72 +200,94 @@ export async function getCMSData(): Promise<CMSData> {
   }
 
   // 3. Try Supabase if configured
-  const supabaseData = await loadFromSupabase();
-  if (supabaseData && supabaseData.students.length >= 34) {
-    memoryCache = supabaseData;
-    return supabaseData;
+  if (isSupabaseConfigured) {
+    const supabaseData = await loadFromSupabase();
+    if (supabaseData && Array.isArray(supabaseData.students)) {
+      const validated = selfHealCMSData(supabaseData);
+      memoryCache = validated;
+      lastCacheTime = Date.now();
+      return validated;
+    }
   }
 
-  // 4. Try reading local atomic file
+  // 4. Try reading local atomic file (for local development or offline mode)
   try {
     ensureDataDir();
     if (fs.existsSync(DATA_FILE)) {
       const content = fs.readFileSync(DATA_FILE, 'utf8');
       const parsed = JSON.parse(content);
-      const healed = selfHealCMSData(parsed);
-      memoryCache = healed;
+      const validated = selfHealCMSData(parsed);
+      memoryCache = validated;
+      lastCacheTime = Date.now();
 
-      // If Neon is configured but was empty, seed it now
+      // If Neon is configured but was empty/failed, attempt sync
       if (isNeonConfigured) {
-        saveToNeon(healed).catch((e) => console.warn('Neon background seed error:', e));
+        saveToNeon(validated).catch((e) => console.warn('Neon background sync error:', e));
       }
 
-      return healed;
+      return validated;
     }
   } catch (err) {
     console.warn('Local data file read error:', err);
   }
 
-  // 5. Default self-healing from INITIAL_CMS_DATA
+  // 5. Default initial seed
   const initialized = selfHealCMSData(INITIAL_CMS_DATA);
   memoryCache = initialized;
+  lastCacheTime = Date.now();
   writeDataAtomic(initialized);
 
   if (isNeonConfigured) {
-    saveToNeon(initialized).catch((e) => console.warn('Neon init save error:', e));
+    try {
+      await saveToNeon(initialized);
+    } catch (e) {
+      console.warn('Neon init save error:', e);
+    }
   }
 
   return initialized;
 }
 
 /**
- * Main function to atomically save CMS Data
+ * Main function to atomically save CMS Data.
+ * Fully awaits Neon PostgreSQL upsert so serverless lambdas never freeze mid-save.
  */
 export async function saveCMSData(data: CMSData): Promise<CMSData> {
-  // Enforce version and timestamp
+  // Enforce version and updated timestamp
   const updatedData: CMSData = {
     ...data,
     version: 'tkj_cms_v1',
     timestamp: Date.now(),
   };
 
-  // Self-heal validation check
+  // Safe schema normalization (preserves all modifications)
   const validated = selfHealCMSData(updatedData);
+
+  // Update in-memory cache immediately
+  memoryCache = validated;
+  lastCacheTime = Date.now();
 
   // Write atomically to local disk
   writeDataAtomic(validated);
 
-  // Sync to Neon PostgreSQL (primary for Vercel)
+  // Sync to Neon PostgreSQL (primary for Vercel) - MUST BE AWAITED!
   if (isNeonConfigured) {
-    saveToNeon(validated).catch((err) => {
-      console.warn('Neon DB background sync error:', err);
-    });
+    try {
+      const success = await saveToNeon(validated);
+      if (!success) {
+        console.error('saveToNeon returned false during saveCMSData');
+      }
+    } catch (err) {
+      console.error('Neon DB save error during saveCMSData:', err);
+    }
   }
 
   // Trigger non-blocking Supabase sync if configured
-  syncToSupabase(validated).catch((err) => {
-    console.warn('Supabase background sync error:', err);
-  });
+  if (isSupabaseConfigured) {
+    syncToSupabase(validated).catch((err) => {
+      console.warn('Supabase background sync error:', err);
+    });
+  }
 
   return validated;
 }
