@@ -134,6 +134,10 @@ export default function Navbar() {
     settings.tiktok_url ||
     'https://www.tiktok.com/@networkcomp.27?_r=1&_t=ZS-99sUSsU8y0t';
 
+  if (pathname?.startsWith('/admin')) {
+    return null;
+  }
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${

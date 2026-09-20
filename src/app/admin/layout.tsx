@@ -59,15 +59,21 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       return;
     }
 
+    if (isAuthenticated) {
+      return;
+    }
+
     const checkSession = async () => {
       try {
         const res = await fetch('/api/auth/me');
         if (res.ok) {
           setIsAuthenticated(true);
         } else {
+          setIsAuthenticated(false);
           router.push('/admin/login');
         }
       } catch {
+        setIsAuthenticated(false);
         router.push('/admin/login');
       } finally {
         setCheckingAuth(false);
@@ -75,7 +81,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     };
 
     checkSession();
-  }, [pathname, isLoginPage, router]);
+  }, [isLoginPage, isAuthenticated, router]);
 
   // Close mobile sidebar on route change
   useEffect(() => {
@@ -231,20 +237,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </div>
         </header>
 
-        {/* Page Content with Smooth Transition Animation */}
-        <main className="p-4 sm:p-6 lg:p-8 flex-1 overflow-x-hidden min-h-[calc(100vh-5rem)] pb-24 md:pb-8">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={pathname}
-              initial={{ opacity: 0, y: 14 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -14 }}
-              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-              className="w-full"
-            >
-              {children}
-            </motion.div>
-          </AnimatePresence>
+        {/* Page Content */}
+        <main className="p-4 sm:p-6 lg:p-8 flex-1 min-h-[calc(100vh-5rem)] pb-24 md:pb-8 w-full min-w-0">
+          {children}
         </main>
       </div>
 

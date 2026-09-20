@@ -93,17 +93,17 @@ export default function AdminInteractivePage() {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-5 items-start">
-        <div className="p-2 rounded-2xl bg-[#1f1d19] border border-[#f5f1ca]/12 flex lg:flex-col gap-1 overflow-x-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-[240px_minmax(0,1fr)] gap-5 items-start w-full min-w-0">
+        <div className="p-2 rounded-2xl bg-[#1f1d19] border border-[#f5f1ca]/12 flex lg:flex-col gap-1 overflow-x-auto w-full min-w-0">
           {tabs.map(({ id, label, count, icon: Icon }) => (
-            <button key={id} type="button" onClick={() => { setTab(id); resetForm(); }} className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-colors ${tab === id ? 'bg-[#f2eb87] text-[#161512]' : 'text-[#d8d6c6] hover:bg-[#f5f1ca]/10'}`}>
+            <button key={id} type="button" onClick={() => { setTab(id); resetForm(); }} className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-colors flex-shrink-0 lg:flex-shrink ${tab === id ? 'bg-[#f2eb87] text-[#161512]' : 'text-[#d8d6c6] hover:bg-[#f5f1ca]/10'}`}>
               <Icon className="w-4 h-4" /><span>{label}</span><span className="ml-auto opacity-70">{count}</span>
             </button>
           ))}
         </div>
 
-        <div className="space-y-5">
-          <form onSubmit={handleSave} className="p-5 sm:p-6 rounded-2xl bg-[#1f1d19] border border-[#f2eb87]/25 space-y-4">
+        <div className="space-y-5 w-full min-w-0">
+          <form onSubmit={handleSave} className="p-5 sm:p-6 rounded-2xl bg-[#1f1d19] border border-[#f2eb87]/25 space-y-4 w-full min-w-0">
             <div className="flex items-center justify-between border-b border-[#f5f1ca]/10 pb-3">
               <h2 className="font-serif-title font-bold text-lg text-[#f5f1ca]">{editingId ? 'Edit Konten' : 'Tambah Konten'}</h2>
               {editingId && <button type="button" onClick={resetForm} className="text-[#9e9a8d] hover:text-[#f2eb87]" aria-label="Batalkan edit"><X className="w-4 h-4" /></button>}
@@ -134,10 +134,10 @@ export default function AdminInteractivePage() {
               <Field label="Jumlah Suara"><input type="number" min={0} value={superlative.votes} onChange={(e) => setSuperlative({ ...superlative, votes: Number(e.target.value) })} /></Field>
             </div>}
 
-            <button disabled={saving} type="submit" className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#f2eb87] text-[#161512] text-xs font-bold disabled:opacity-50"><Save className="w-4 h-4" />{saving ? 'Menyimpan...' : editingId ? 'Simpan Perubahan' : 'Tambah ke Website'}</button>
+            <button disabled={saving} type="submit" className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#f2eb87] text-[#161512] text-xs font-bold disabled:opacity-50 transition-all active:scale-95"><Save className="w-4 h-4" />{saving ? 'Menyimpan...' : editingId ? 'Simpan Perubahan' : 'Tambah ke Website'}</button>
           </form>
 
-          <div className="space-y-3">
+          <div className="space-y-3 w-full min-w-0">
             {tab === 'capsules' && timeCapsules.map((item) => <ContentRow key={item.id} title={item.title} detail={`${item.sender_name} · ${item.target_year}`} onEdit={() => startEdit(item, 'capsules')} onDelete={() => handleDelete(item.id, 'capsules')} />)}
             {tab === 'memories' && memoryNotes.map((item) => <ContentRow key={item.id} title={item.message} detail={`${item.sender_name} · ${item.likes} apresiasi`} onEdit={() => startEdit(item, 'memories')} onDelete={() => handleDelete(item.id, 'memories')} />)}
             {tab === 'superlatives' && superlatives.map((item) => <ContentRow key={item.id} title={item.title} detail={`${item.student_name} · ${item.votes} suara`} onEdit={() => startEdit(item, 'superlatives')} onDelete={() => handleDelete(item.id, 'superlatives')} />)}
@@ -153,5 +153,36 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 }
 
 function ContentRow({ title, detail, onEdit, onDelete }: { title: string; detail: string; onEdit: () => void; onDelete: () => void }) {
-  return <div className="p-4 rounded-2xl bg-[#1f1d19] border border-[#f5f1ca]/12 flex items-center justify-between gap-3"><div className="min-w-0"><p className="font-semibold text-sm text-[#f5f1ca] truncate">{title}</p><p className="text-[11px] text-[#9e9a8d] truncate mt-0.5">{detail}</p></div><div className="flex items-center gap-1"><button type="button" onClick={onEdit} className="p-2 rounded-lg text-[#d8d6c6] hover:bg-[#f5f1ca]/10 hover:text-[#f2eb87]" aria-label="Edit"><Edit3 className="w-4 h-4" /></button><button type="button" onClick={onDelete} className="p-2 rounded-lg text-red-400 hover:bg-red-500/10" aria-label="Hapus"><Trash2 className="w-4 h-4" /></button></div></div>;
+  return (
+    <div className="p-4 sm:p-5 rounded-2xl bg-[#1f1d19] border border-[#f5f1ca]/12 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 transition-all hover:border-[#f2eb87]/30 w-full min-w-0 shadow-sm">
+      <div className="flex-1 min-w-0">
+        <p className="font-semibold text-sm text-[#f5f1ca] line-clamp-2 leading-relaxed break-words">
+          {title}
+        </p>
+        <p className="text-[11px] text-[#9e9a8d] mt-1 break-words">
+          {detail}
+        </p>
+      </div>
+      <div className="flex items-center gap-1.5 flex-shrink-0 self-end sm:self-center">
+        <button
+          type="button"
+          onClick={onEdit}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium text-[#d8d6c6] bg-[#161512] border border-[#f5f1ca]/15 hover:bg-[#f2eb87] hover:text-[#161512] hover:border-[#f2eb87] transition-all active:scale-95"
+          aria-label="Edit"
+        >
+          <Edit3 className="w-3.5 h-3.5" />
+          <span>Edit</span>
+        </button>
+        <button
+          type="button"
+          onClick={onDelete}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium text-red-400 bg-[#161512] border border-red-500/20 hover:bg-red-500 hover:text-white transition-all active:scale-95"
+          aria-label="Hapus"
+        >
+          <Trash2 className="w-3.5 h-3.5" />
+          <span>Hapus</span>
+        </button>
+      </div>
+    </div>
+  );
 }

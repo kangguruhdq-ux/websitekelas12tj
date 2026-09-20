@@ -163,10 +163,12 @@ export default function StrukturPage() {
                 </motion.div>
 
                 {/* Bottom Docking Port on Wali Kelas */}
-                <div className="w-3 h-3 rounded-full border-2 border-[#f2eb87] bg-[#161512] shadow-[0_0_8px_rgba(242,235,135,0.8)] -mt-1.5 z-30" />
+                <div className="w-3.5 h-3.5 rounded-full border-2 border-[#f2eb87] bg-[#161512] shadow-[0_0_10px_rgba(242,235,135,0.8)] -mt-1.5 z-30 flex items-center justify-center">
+                  <div className="w-1.5 h-1.5 rounded-full bg-[#f2eb87]" />
+                </div>
 
                 {/* Vertical Stem down to Level 2 */}
-                <div className="w-[2px] h-10 bg-gradient-to-b from-[#f2eb87] to-[#f5f1ca] shadow-[0_0_8px_rgba(242,235,135,0.4)]" />
+                <div className="w-[2px] h-8 bg-gradient-to-b from-[#f2eb87] to-[#f5f1ca] shadow-[0_0_8px_rgba(242,235,135,0.5)]" />
               </div>
             )}
 
@@ -174,90 +176,123 @@ export default function StrukturPage() {
             {/* TIER 2: PRESIDIUM (KETUA & WAKIL KETUA)                             */}
             {/* ------------------------------------------------------------------- */}
             <div className="w-full max-w-3xl relative z-10 flex flex-col items-center">
-              {/* Horizontal Circuit Bar connecting Ketua and Wakil */}
-              <div className="w-[75%] h-6 border-t-2 border-x-2 border-[#f2eb87]/80 rounded-t-2xl relative flex justify-between">
-                {/* Central T-junction meeting Wali Kelas stem */}
-                <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-[#f2eb87] shadow-[0_0_10px_rgba(242,235,135,0.8)]" />
-                {/* Left Drop Port to Ketua */}
-                <div className="w-3 h-3 rounded-full border-2 border-[#f2eb87] bg-[#161512] -ml-1.5 mt-4 self-end shadow-[0_0_6px_rgba(242,235,135,0.6)]" />
-                {/* Right Drop Port to Wakil */}
-                <div className="w-3 h-3 rounded-full border-2 border-[#f2eb87] bg-[#161512] -mr-1.5 mt-4 self-end shadow-[0_0_6px_rgba(242,235,135,0.6)]" />
+              {/* Desktop 2-Way Branch SVG (50 -> 25 & 75) */}
+              <div className="hidden sm:block w-full h-8 relative">
+                <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 32">
+                  <line x1="50" y1="0" x2="50" y2="16" stroke="#f2eb87" strokeWidth="2" strokeOpacity="0.9" />
+                  <circle cx="50" cy="16" r="3" fill="#f2eb87" />
+                  <line x1="25" y1="16" x2="75" y2="16" stroke="#f2eb87" strokeWidth="2" strokeOpacity="0.9" />
+                  <line x1="25" y1="16" x2="25" y2="32" stroke="#f2eb87" strokeWidth="2" strokeOpacity="0.9" />
+                  <circle cx="25" cy="32" r="3" fill="#161512" stroke="#f2eb87" strokeWidth="2" />
+                  <line x1="75" y1="16" x2="75" y2="32" stroke="#f2eb87" strokeWidth="2" strokeOpacity="0.9" />
+                  <circle cx="75" cy="32" r="3" fill="#161512" stroke="#f2eb87" strokeWidth="2" />
+                </svg>
+              </div>
+
+              {/* Mobile Lead-In Connector */}
+              <div className="sm:hidden flex flex-col items-center mb-2">
+                <div className="w-[2px] h-6 bg-[#f2eb87]" />
+                <div className="w-2.5 h-2.5 rounded-full bg-[#f2eb87] shadow-[0_0_8px_rgba(242,235,135,0.8)] -mt-1" />
               </div>
 
               {/* Cards Grid: Ketua & Wakil */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full">
                 {/* Ketua Card */}
                 {ketuaRole && (
-                  <motion.div
-                    whileHover={{ y: -4 }}
-                    onClick={() => handlePersonClick(ketuaRole.person_name, ketuaRole.student_id)}
-                    className="cursor-pointer p-5 rounded-3xl bg-[#1f1d19] border border-[#f2eb87]/30 hover:border-[#f2eb87] transition-all text-center relative shadow-lg group"
-                  >
-                    <div className="absolute top-3 right-3 p-1.5 rounded-xl bg-[#161512] text-[#f2eb87] border border-[#f2eb87]/20">
-                      <Crown className="w-4 h-4" />
+                  <div className="flex flex-col items-center w-full">
+                    <motion.div
+                      whileHover={{ y: -4 }}
+                      onClick={() => handlePersonClick(ketuaRole.person_name, ketuaRole.student_id)}
+                      className="cursor-pointer p-5 rounded-3xl bg-[#1f1d19] border border-[#f2eb87]/30 hover:border-[#f2eb87] transition-all text-center relative shadow-lg group w-full"
+                    >
+                      <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full border-2 border-[#f2eb87] bg-[#161512] z-20" />
+                      <div className="absolute top-3 right-3 p-1.5 rounded-xl bg-[#161512] text-[#f2eb87] border border-[#f2eb87]/20">
+                        <Crown className="w-4 h-4" />
+                      </div>
+
+                      <div className="relative w-16 h-16 mx-auto rounded-2xl overflow-hidden bg-[#161512] border border-[#f2eb87]/30 mb-3 shadow-inner">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={getPersonPhoto(ketuaRole.person_name, ketuaRole.student_id)}
+                          alt={ketuaRole.person_name}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                        />
+                      </div>
+
+                      <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#161512] text-[#f2eb87] border border-[#f2eb87]/30">
+                        {ketuaRole.role_name}
+                      </span>
+
+                      <h4 className="text-lg font-serif-title font-bold text-[#f5f1ca] mt-2 group-hover:text-[#f2eb87] transition-colors">
+                        {ketuaRole.person_name}
+                      </h4>
+                      <p className="text-xs text-[#9e9a8d] mt-0.5">Pimpinan Utama Kelas</p>
+                      <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full border-2 border-[#f2eb87] bg-[#161512] z-20" />
+                    </motion.div>
+
+                    {/* Mobile Connector between Ketua and Wakil */}
+                    <div className="sm:hidden flex flex-col items-center my-3">
+                      <div className="w-[2px] h-6 bg-gradient-to-b from-[#f2eb87] to-[#f5f1ca]" />
+                      <div className="w-2.5 h-2.5 rounded-full bg-[#f2eb87] shadow-[0_0_8px_rgba(242,235,135,0.8)] -mt-1" />
+                      <div className="w-[2px] h-6 bg-gradient-to-b from-[#f5f1ca] to-[#f2eb87]" />
                     </div>
-
-                    <div className="relative w-16 h-16 mx-auto rounded-2xl overflow-hidden bg-[#161512] border border-[#f2eb87]/30 mb-3 shadow-inner">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={getPersonPhoto(ketuaRole.person_name, ketuaRole.student_id)}
-                        alt={ketuaRole.person_name}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                      />
-                    </div>
-
-                    <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#161512] text-[#f2eb87] border border-[#f2eb87]/30">
-                      {ketuaRole.role_name}
-                    </span>
-
-                    <h4 className="text-lg font-serif-title font-bold text-[#f5f1ca] mt-2 group-hover:text-[#f2eb87] transition-colors">
-                      {ketuaRole.person_name}
-                    </h4>
-                    <p className="text-xs text-[#9e9a8d] mt-0.5">Pimpinan Utama Kelas</p>
-                  </motion.div>
+                  </div>
                 )}
 
                 {/* Wakil Card */}
                 {wakilRole && (
-                  <motion.div
-                    whileHover={{ y: -4 }}
-                    onClick={() => handlePersonClick(wakilRole.person_name, wakilRole.student_id)}
-                    className="cursor-pointer p-5 rounded-3xl bg-[#1f1d19] border border-[#f5f1ca]/20 hover:border-[#f2eb87] transition-all text-center relative shadow-lg group"
-                  >
-                    <div className="absolute top-3 right-3 p-1.5 rounded-xl bg-[#161512] text-[#f5f1ca] border border-[#f5f1ca]/20">
-                      <Shield className="w-4 h-4" />
-                    </div>
+                  <div className="flex flex-col items-center w-full">
+                    <motion.div
+                      whileHover={{ y: -4 }}
+                      onClick={() => handlePersonClick(wakilRole.person_name, wakilRole.student_id)}
+                      className="cursor-pointer p-5 rounded-3xl bg-[#1f1d19] border border-[#f5f1ca]/20 hover:border-[#f2eb87] transition-all text-center relative shadow-lg group w-full"
+                    >
+                      <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full border-2 border-[#f2eb87] bg-[#161512] z-20" />
+                      <div className="absolute top-3 right-3 p-1.5 rounded-xl bg-[#161512] text-[#f5f1ca] border border-[#f5f1ca]/20">
+                        <Shield className="w-4 h-4" />
+                      </div>
 
-                    <div className="relative w-16 h-16 mx-auto rounded-2xl overflow-hidden bg-[#161512] border border-[#f5f1ca]/30 mb-3 shadow-inner">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={getPersonPhoto(wakilRole.person_name, wakilRole.student_id)}
-                        alt={wakilRole.person_name}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                      />
-                    </div>
+                      <div className="relative w-16 h-16 mx-auto rounded-2xl overflow-hidden bg-[#161512] border border-[#f5f1ca]/30 mb-3 shadow-inner">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={getPersonPhoto(wakilRole.person_name, wakilRole.student_id)}
+                          alt={wakilRole.person_name}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                        />
+                      </div>
 
-                    <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#161512] text-[#f5f1ca] border border-[#f5f1ca]/30">
-                      {wakilRole.role_name}
-                    </span>
+                      <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#161512] text-[#f5f1ca] border border-[#f5f1ca]/30">
+                        {wakilRole.role_name}
+                      </span>
 
-                    <h4 className="text-lg font-serif-title font-bold text-[#f5f1ca] mt-2 group-hover:text-[#f2eb87] transition-colors">
-                      {wakilRole.person_name}
-                    </h4>
-                    <p className="text-xs text-[#9e9a8d] mt-0.5">Wakil Pimpinan Kelas</p>
-                  </motion.div>
+                      <h4 className="text-lg font-serif-title font-bold text-[#f5f1ca] mt-2 group-hover:text-[#f2eb87] transition-colors">
+                        {wakilRole.person_name}
+                      </h4>
+                      <p className="text-xs text-[#9e9a8d] mt-0.5">Wakil Pimpinan Kelas</p>
+                      <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full border-2 border-[#f2eb87] bg-[#161512] z-20" />
+                    </motion.div>
+                  </div>
                 )}
               </div>
 
-              {/* Lower Merge Bar converging Ketua & Wakil back to central spine */}
-              <div className="w-[75%] h-6 border-b-2 border-x-2 border-[#f2eb87]/80 rounded-b-2xl relative flex justify-between">
-                <div className="w-3 h-3 rounded-full border-2 border-[#f2eb87] bg-[#161512] -ml-1.5 -mt-1.5 shadow-[0_0_6px_rgba(242,235,135,0.6)]" />
-                <div className="w-3 h-3 rounded-full border-2 border-[#f2eb87] bg-[#161512] -mr-1.5 -mt-1.5 shadow-[0_0_6px_rgba(242,235,135,0.6)]" />
-                <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-[#f2eb87] shadow-[0_0_10px_rgba(242,235,135,0.8)]" />
+              {/* Desktop 2-Way Convergence SVG (25 & 75 -> 50) */}
+              <div className="hidden sm:block w-full h-8 relative">
+                <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 32">
+                  <line x1="25" y1="0" x2="25" y2="16" stroke="#f2eb87" strokeWidth="2" strokeOpacity="0.9" />
+                  <circle cx="25" cy="0" r="3" fill="#161512" stroke="#f2eb87" strokeWidth="2" />
+                  <line x1="75" y1="0" x2="75" y2="16" stroke="#f2eb87" strokeWidth="2" strokeOpacity="0.9" />
+                  <circle cx="75" cy="0" r="3" fill="#161512" stroke="#f2eb87" strokeWidth="2" />
+                  <line x1="25" y1="16" x2="75" y2="16" stroke="#f2eb87" strokeWidth="2" strokeOpacity="0.9" />
+                  <circle cx="50" cy="16" r="3" fill="#f2eb87" />
+                  <line x1="50" y1="16" x2="50" y2="32" stroke="#f2eb87" strokeWidth="2" strokeOpacity="0.9" />
+                </svg>
               </div>
 
-              {/* Central Spine connecting to Level 3 */}
-              <div className="w-[2px] h-8 bg-gradient-to-b from-[#f2eb87] to-[#f5f1ca]" />
+              {/* Mobile Lead-Out Connector */}
+              <div className="sm:hidden flex flex-col items-center mt-3">
+                <div className="w-[2px] h-6 bg-gradient-to-b from-[#f2eb87] to-[#f5f1ca]" />
+                <div className="w-2.5 h-2.5 rounded-full bg-[#f2eb87] shadow-[0_0_8px_rgba(242,235,135,0.8)] -mt-1" />
+              </div>
             </div>
 
             {/* ------------------------------------------------------------------- */}
@@ -270,17 +305,40 @@ export default function StrukturPage() {
                 <span>Biro Administrasi & Tata Kelola Kas</span>
               </div>
 
-              {/* Stem down to 4-Way Spanning Bar */}
-              <div className="w-[2px] h-6 bg-[#f2eb87]" />
+              {/* Desktop 4-Way Branch SVG (50 -> 12.5, 37.5, 62.5, 87.5) */}
+              <div className="hidden lg:block w-full h-8 relative">
+                <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 32">
+                  <line x1="50" y1="0" x2="50" y2="16" stroke="#f2eb87" strokeWidth="2" strokeOpacity="0.9" />
+                  <circle cx="50" cy="16" r="3" fill="#f2eb87" />
+                  <line x1="12.5" y1="16" x2="87.5" y2="16" stroke="#f2eb87" strokeWidth="2" strokeOpacity="0.9" />
+                  <line x1="12.5" y1="16" x2="12.5" y2="32" stroke="#f2eb87" strokeWidth="2" strokeOpacity="0.9" />
+                  <circle cx="12.5" cy="32" r="3" fill="#161512" stroke="#f2eb87" strokeWidth="2" />
+                  <line x1="37.5" y1="16" x2="37.5" y2="32" stroke="#f2eb87" strokeWidth="2" strokeOpacity="0.9" />
+                  <circle cx="37.5" cy="32" r="3" fill="#161512" stroke="#f2eb87" strokeWidth="2" />
+                  <line x1="62.5" y1="16" x2="62.5" y2="32" stroke="#f2eb87" strokeWidth="2" strokeOpacity="0.9" />
+                  <circle cx="62.5" cy="32" r="3" fill="#161512" stroke="#f2eb87" strokeWidth="2" />
+                  <line x1="87.5" y1="16" x2="87.5" y2="32" stroke="#f2eb87" strokeWidth="2" strokeOpacity="0.9" />
+                  <circle cx="87.5" cy="32" r="3" fill="#161512" stroke="#f2eb87" strokeWidth="2" />
+                </svg>
+              </div>
 
-              {/* 4-Way Spanning Bar */}
-              <div className="w-[88%] h-6 border-t-2 border-[#f2eb87]/80 relative flex justify-between">
-                <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-[#f2eb87]" />
-                {/* 4 Docking points across the columns */}
-                <div className="w-2.5 h-2.5 rounded-full border-2 border-[#f2eb87] bg-[#161512] -ml-1 mt-4 self-end" />
-                <div className="w-2.5 h-2.5 rounded-full border-2 border-[#f2eb87] bg-[#161512] -ml-1 mt-4 self-end" />
-                <div className="w-2.5 h-2.5 rounded-full border-2 border-[#f2eb87] bg-[#161512] -mr-1 mt-4 self-end" />
-                <div className="w-2.5 h-2.5 rounded-full border-2 border-[#f2eb87] bg-[#161512] -mr-1 mt-4 self-end" />
+              {/* Tablet 2-Way Branch SVG */}
+              <div className="hidden sm:block lg:hidden w-full h-8 relative">
+                <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 32">
+                  <line x1="50" y1="0" x2="50" y2="16" stroke="#f2eb87" strokeWidth="2" strokeOpacity="0.9" />
+                  <circle cx="50" cy="16" r="3" fill="#f2eb87" />
+                  <line x1="25" y1="16" x2="75" y2="16" stroke="#f2eb87" strokeWidth="2" strokeOpacity="0.9" />
+                  <line x1="25" y1="16" x2="25" y2="32" stroke="#f2eb87" strokeWidth="2" strokeOpacity="0.9" />
+                  <circle cx="25" cy="32" r="3" fill="#161512" stroke="#f2eb87" strokeWidth="2" />
+                  <line x1="75" y1="16" x2="75" y2="32" stroke="#f2eb87" strokeWidth="2" strokeOpacity="0.9" />
+                  <circle cx="75" cy="32" r="3" fill="#161512" stroke="#f2eb87" strokeWidth="2" />
+                </svg>
+              </div>
+
+              {/* Mobile Lead-In */}
+              <div className="sm:hidden flex flex-col items-center my-2">
+                <div className="w-[2px] h-6 bg-[#f2eb87]" />
+                <div className="w-2.5 h-2.5 rounded-full bg-[#f2eb87] shadow-[0_0_8px_rgba(242,235,135,0.8)] -mt-1" />
               </div>
 
               {/* 4 Cards Grid */}
@@ -291,8 +349,9 @@ export default function StrukturPage() {
                     key={item.id}
                     whileHover={{ y: -3 }}
                     onClick={() => handlePersonClick(item.person_name, item.student_id)}
-                    className="cursor-pointer p-4 rounded-2xl bg-[#1f1d19] border border-[#f5f1ca]/15 hover:border-[#f2eb87] transition-all text-center shadow-sm group"
+                    className="cursor-pointer p-4 rounded-2xl bg-[#1f1d19] border border-[#f5f1ca]/15 hover:border-[#f2eb87] transition-all text-center shadow-sm group relative"
                   >
+                    <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full border-2 border-[#f2eb87] bg-[#161512] z-20" />
                     <div className="relative w-14 h-14 mx-auto rounded-xl overflow-hidden bg-[#161512] border border-[#f5f1ca]/20 mb-2.5 shadow-inner">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
@@ -308,6 +367,7 @@ export default function StrukturPage() {
                       {item.person_name}
                     </h5>
                     <p className="text-[11px] text-[#9e9a8d] mt-0.5">Notulensi & Arsip Kelas</p>
+                    <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full border-2 border-[#f2eb87] bg-[#161512] z-20" />
                   </motion.div>
                 ))}
 
@@ -317,8 +377,9 @@ export default function StrukturPage() {
                     key={item.id}
                     whileHover={{ y: -3 }}
                     onClick={() => handlePersonClick(item.person_name, item.student_id)}
-                    className="cursor-pointer p-4 rounded-2xl bg-[#1f1d19] border border-[#f5f1ca]/15 hover:border-[#f2eb87] transition-all text-center shadow-sm group"
+                    className="cursor-pointer p-4 rounded-2xl bg-[#1f1d19] border border-[#f5f1ca]/15 hover:border-[#f2eb87] transition-all text-center shadow-sm group relative"
                   >
+                    <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full border-2 border-[#f2eb87] bg-[#161512] z-20" />
                     <div className="relative w-14 h-14 mx-auto rounded-xl overflow-hidden bg-[#161512] border border-[#f5f1ca]/20 mb-2.5 shadow-inner">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
@@ -334,36 +395,74 @@ export default function StrukturPage() {
                       {item.person_name}
                     </h5>
                     <p className="text-[11px] text-[#9e9a8d] mt-0.5">Manajemen Kas & Keuangan</p>
+                    <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full border-2 border-[#f2eb87] bg-[#161512] z-20" />
                   </motion.div>
                 ))}
               </div>
 
-              {/* Lower Merge Bar converging back to central spine */}
-              <div className="w-[88%] h-6 border-b-2 border-[#f2eb87]/80 relative flex justify-center">
-                <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-[#f2eb87] shadow-[0_0_8px_rgba(242,235,135,0.7)]" />
+              {/* Desktop 4-Way Convergence SVG */}
+              <div className="hidden lg:block w-full h-8 relative">
+                <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 32">
+                  <line x1="12.5" y1="0" x2="12.5" y2="16" stroke="#f2eb87" strokeWidth="2" strokeOpacity="0.9" />
+                  <circle cx="12.5" cy="0" r="3" fill="#161512" stroke="#f2eb87" strokeWidth="2" />
+                  <line x1="37.5" y1="0" x2="37.5" y2="16" stroke="#f2eb87" strokeWidth="2" strokeOpacity="0.9" />
+                  <circle cx="37.5" cy="0" r="3" fill="#161512" stroke="#f2eb87" strokeWidth="2" />
+                  <line x1="62.5" y1="0" x2="62.5" y2="16" stroke="#f2eb87" strokeWidth="2" strokeOpacity="0.9" />
+                  <circle cx="62.5" cy="0" r="3" fill="#161512" stroke="#f2eb87" strokeWidth="2" />
+                  <line x1="87.5" y1="0" x2="87.5" y2="16" stroke="#f2eb87" strokeWidth="2" strokeOpacity="0.9" />
+                  <circle cx="87.5" cy="0" r="3" fill="#161512" stroke="#f2eb87" strokeWidth="2" />
+                  <line x1="12.5" y1="16" x2="87.5" y2="16" stroke="#f2eb87" strokeWidth="2" strokeOpacity="0.9" />
+                  <circle cx="50" cy="16" r="3" fill="#f2eb87" />
+                  <line x1="50" y1="16" x2="50" y2="32" stroke="#f2eb87" strokeWidth="2" strokeOpacity="0.9" />
+                </svg>
               </div>
 
-              {/* Central Spine connecting to Level 4 */}
-              <div className="w-[2px] h-8 bg-[#f2eb87]" />
+              {/* Tablet 2-Way Convergence SVG */}
+              <div className="hidden sm:block lg:hidden w-full h-8 relative">
+                <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 32">
+                  <line x1="25" y1="0" x2="25" y2="16" stroke="#f2eb87" strokeWidth="2" strokeOpacity="0.9" />
+                  <circle cx="25" cy="0" r="3" fill="#161512" stroke="#f2eb87" strokeWidth="2" />
+                  <line x1="75" y1="0" x2="75" y2="16" stroke="#f2eb87" strokeWidth="2" strokeOpacity="0.9" />
+                  <circle cx="75" cy="0" r="3" fill="#161512" stroke="#f2eb87" strokeWidth="2" />
+                  <line x1="25" y1="16" x2="75" y2="16" stroke="#f2eb87" strokeWidth="2" strokeOpacity="0.9" />
+                  <circle cx="50" cy="16" r="3" fill="#f2eb87" />
+                  <line x1="50" y1="16" x2="50" y2="32" stroke="#f2eb87" strokeWidth="2" strokeOpacity="0.9" />
+                </svg>
+              </div>
+
+              {/* Mobile Lead-Out */}
+              <div className="sm:hidden flex flex-col items-center mt-3">
+                <div className="w-[2px] h-6 bg-gradient-to-b from-[#f2eb87] to-[#f5f1ca]" />
+                <div className="w-2.5 h-2.5 rounded-full bg-[#f2eb87] shadow-[0_0_8px_rgba(242,235,135,0.8)] -mt-1" />
+              </div>
             </div>
 
             {/* ------------------------------------------------------------------- */}
             {/* TIER 4: KOMANDO PELETON (DANTON 1 & DANTON 2)                       */}
             {/* ------------------------------------------------------------------- */}
             <div className="w-full max-w-3xl relative z-10 flex flex-col items-center">
-              {/* Integrated Circuit Badge Node */}
               <div className="relative z-10 flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#161512] border border-[#f2eb87]/40 text-[#f2eb87] text-xs font-bold uppercase tracking-wider">
                 <span className="w-2 h-2 rounded-full bg-red-400" />
                 <span>Komando Barisan & Peleton (Danton)</span>
               </div>
 
-              <div className="w-[2px] h-5 bg-[#f2eb87]" />
+              {/* Desktop 2-Way Branch SVG */}
+              <div className="hidden sm:block w-full h-8 relative">
+                <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 32">
+                  <line x1="50" y1="0" x2="50" y2="16" stroke="#f2eb87" strokeWidth="2" strokeOpacity="0.9" />
+                  <circle cx="50" cy="16" r="3" fill="#f2eb87" />
+                  <line x1="25" y1="16" x2="75" y2="16" stroke="#f2eb87" strokeWidth="2" strokeOpacity="0.9" />
+                  <line x1="25" y1="16" x2="25" y2="32" stroke="#f2eb87" strokeWidth="2" strokeOpacity="0.9" />
+                  <circle cx="25" cy="32" r="3" fill="#161512" stroke="#f2eb87" strokeWidth="2" />
+                  <line x1="75" y1="16" x2="75" y2="32" stroke="#f2eb87" strokeWidth="2" strokeOpacity="0.9" />
+                  <circle cx="75" cy="32" r="3" fill="#161512" stroke="#f2eb87" strokeWidth="2" />
+                </svg>
+              </div>
 
-              {/* Fork to 2 Dantons */}
-              <div className="w-[70%] h-6 border-t-2 border-x-2 border-[#f2eb87]/80 rounded-t-2xl relative flex justify-between">
-                <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-[#f2eb87]" />
-                <div className="w-2.5 h-2.5 rounded-full border-2 border-[#f2eb87] bg-[#161512] -ml-1 mt-4 self-end" />
-                <div className="w-2.5 h-2.5 rounded-full border-2 border-[#f2eb87] bg-[#161512] -mr-1 mt-4 self-end" />
+              {/* Mobile Lead-In */}
+              <div className="sm:hidden flex flex-col items-center my-2">
+                <div className="w-[2px] h-6 bg-[#f2eb87]" />
+                <div className="w-2.5 h-2.5 rounded-full bg-[#f2eb87] shadow-[0_0_8px_rgba(242,235,135,0.8)] -mt-1" />
               </div>
 
               {/* Danton Cards */}
@@ -373,8 +472,9 @@ export default function StrukturPage() {
                     key={item.id}
                     whileHover={{ y: -3 }}
                     onClick={() => handlePersonClick(item.person_name, item.student_id)}
-                    className="cursor-pointer p-4 rounded-2xl bg-[#1f1d19] border border-[#f5f1ca]/15 hover:border-[#f2eb87] transition-all text-center shadow-sm group"
+                    className="cursor-pointer p-4 rounded-2xl bg-[#1f1d19] border border-[#f5f1ca]/15 hover:border-[#f2eb87] transition-all text-center shadow-sm group relative"
                   >
+                    <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full border-2 border-[#f2eb87] bg-[#161512] z-20" />
                     <div className="relative w-14 h-14 mx-auto rounded-xl overflow-hidden bg-[#161512] border border-[#f5f1ca]/20 mb-2.5 shadow-inner">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
@@ -390,42 +490,72 @@ export default function StrukturPage() {
                       {item.person_name}
                     </h5>
                     <p className="text-[11px] text-[#9e9a8d] mt-0.5">Komando Baris & Disiplin</p>
+                    <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full border-2 border-[#f2eb87] bg-[#161512] z-20" />
                   </motion.div>
                 ))}
               </div>
 
-              {/* Lower Merge Bar converging Danton */}
-              <div className="w-[70%] h-6 border-b-2 border-x-2 border-[#f2eb87]/80 rounded-b-2xl relative flex justify-center">
-                <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-[#f2eb87] shadow-[0_0_8px_rgba(242,235,135,0.7)]" />
+              {/* Desktop 2-Way Convergence SVG */}
+              <div className="hidden sm:block w-full h-8 relative">
+                <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 32">
+                  <line x1="25" y1="0" x2="25" y2="16" stroke="#f2eb87" strokeWidth="2" strokeOpacity="0.9" />
+                  <circle cx="25" cy="0" r="3" fill="#161512" stroke="#f2eb87" strokeWidth="2" />
+                  <line x1="75" y1="0" x2="75" y2="16" stroke="#f2eb87" strokeWidth="2" strokeOpacity="0.9" />
+                  <circle cx="75" cy="0" r="3" fill="#161512" stroke="#f2eb87" strokeWidth="2" />
+                  <line x1="25" y1="16" x2="75" y2="16" stroke="#f2eb87" strokeWidth="2" strokeOpacity="0.9" />
+                  <circle cx="50" cy="16" r="3" fill="#f2eb87" />
+                  <line x1="50" y1="16" x2="50" y2="32" stroke="#f2eb87" strokeWidth="2" strokeOpacity="0.9" />
+                </svg>
               </div>
 
-              {/* Central Spine to Level 5 */}
-              <div className="w-[2px] h-8 bg-[#f2eb87]" />
+              {/* Mobile Lead-Out */}
+              <div className="sm:hidden flex flex-col items-center mt-3">
+                <div className="w-[2px] h-6 bg-gradient-to-b from-[#f2eb87] to-[#f5f1ca]" />
+                <div className="w-2.5 h-2.5 rounded-full bg-[#f2eb87] shadow-[0_0_8px_rgba(242,235,135,0.8)] -mt-1" />
+              </div>
             </div>
 
             {/* ------------------------------------------------------------------- */}
             {/* TIER 5: DEPARTEMEN & KOORDINATOR DIVISI                             */}
             {/* ------------------------------------------------------------------- */}
             <div className="w-full max-w-6xl relative z-10 flex flex-col items-center">
-              {/* Integrated Circuit Badge Node */}
               <div className="relative z-10 flex items-center gap-2 px-5 py-2 rounded-full bg-[#161512] border border-[#f2eb87]/50 shadow-[0_0_20px_rgba(242,235,135,0.15)] text-[#f2eb87] text-xs font-bold uppercase tracking-wider">
                 <span className="w-2 h-2 rounded-full bg-emerald-400" />
                 <span>Koordinator Divisi & Departemen Operasional</span>
               </div>
 
-              <div className="w-[2px] h-6 bg-[#f2eb87]" />
+              {/* Desktop 3-Way Branch SVG (50 -> 16.67, 50, 83.33) */}
+              <div className="hidden md:block w-full h-8 relative">
+                <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 32">
+                  <line x1="50" y1="0" x2="50" y2="16" stroke="#f2eb87" strokeWidth="2" strokeOpacity="0.9" />
+                  <circle cx="50" cy="16" r="3" fill="#f2eb87" />
+                  <line x1="16.67" y1="16" x2="83.33" y2="16" stroke="#f2eb87" strokeWidth="2" strokeOpacity="0.9" />
+                  
+                  {/* Left drop into Divisi Kebersihan */}
+                  <line x1="16.67" y1="16" x2="16.67" y2="32" stroke="#f2eb87" strokeWidth="2" strokeOpacity="0.9" />
+                  <circle cx="16.67" cy="32" r="3" fill="#161512" stroke="#f2eb87" strokeWidth="2" />
+                  
+                  {/* Center drop into Divisi Keamanan */}
+                  <line x1="50" y1="16" x2="50" y2="32" stroke="#f2eb87" strokeWidth="2" strokeOpacity="0.9" />
+                  <circle cx="50" cy="32" r="3" fill="#161512" stroke="#f2eb87" strokeWidth="2" />
+                  
+                  {/* Right drop into Divisi Keagamaan */}
+                  <line x1="83.33" y1="16" x2="83.33" y2="32" stroke="#f2eb87" strokeWidth="2" strokeOpacity="0.9" />
+                  <circle cx="83.33" cy="32" r="3" fill="#161512" stroke="#f2eb87" strokeWidth="2" />
+                </svg>
+              </div>
 
-              {/* 3-Way Branch Bar */}
-              <div className="w-[85%] h-6 border-t-2 border-[#f2eb87]/80 relative flex justify-between">
-                <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-[#f2eb87]" />
-                <div className="w-2.5 h-2.5 rounded-full border-2 border-[#f2eb87] bg-[#161512] -ml-1 mt-4 self-end" />
-                <div className="w-2.5 h-2.5 rounded-full border-2 border-[#f2eb87] bg-[#161512] -mr-1 mt-4 self-end" />
+              {/* Mobile Lead-In */}
+              <div className="md:hidden flex flex-col items-center my-2">
+                <div className="w-[2px] h-6 bg-[#f2eb87]" />
+                <div className="w-2.5 h-2.5 rounded-full bg-[#f2eb87] shadow-[0_0_8px_rgba(242,235,135,0.8)] -mt-1" />
               </div>
 
               {/* 3 Divisions Grid */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
                 {/* Divisi Kebersihan */}
-                <div className="p-6 rounded-3xl bg-[#1f1d19] border border-[#f5f1ca]/15 hover:border-[#f2eb87] transition-all space-y-4 shadow-sm">
+                <div className="p-6 rounded-3xl bg-[#1f1d19] border border-[#f5f1ca]/15 hover:border-[#f2eb87] transition-all space-y-4 shadow-sm relative">
+                  <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full border-2 border-[#f2eb87] bg-[#161512] z-20" />
                   <div className="flex items-center gap-2.5 pb-3 border-b border-[#f5f1ca]/10 text-[#f2eb87]">
                     <Brush className="w-4 h-4" />
                     <span className="font-serif-title font-bold text-base text-[#f5f1ca]">
@@ -462,7 +592,8 @@ export default function StrukturPage() {
                 </div>
 
                 {/* Divisi Keamanan */}
-                <div className="p-6 rounded-3xl bg-[#1f1d19] border border-[#f5f1ca]/15 hover:border-[#f2eb87] transition-all space-y-4 shadow-sm">
+                <div className="p-6 rounded-3xl bg-[#1f1d19] border border-[#f5f1ca]/15 hover:border-[#f2eb87] transition-all space-y-4 shadow-sm relative">
+                  <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full border-2 border-[#f2eb87] bg-[#161512] z-20" />
                   <div className="flex items-center gap-2.5 pb-3 border-b border-[#f5f1ca]/10 text-[#f2eb87]">
                     <Lock className="w-4 h-4" />
                     <span className="font-serif-title font-bold text-base text-[#f5f1ca]">
@@ -499,7 +630,8 @@ export default function StrukturPage() {
                 </div>
 
                 {/* Divisi Keagamaan */}
-                <div className="p-6 rounded-3xl bg-[#1f1d19] border border-[#f5f1ca]/15 hover:border-[#f2eb87] transition-all space-y-4 shadow-sm">
+                <div className="p-6 rounded-3xl bg-[#1f1d19] border border-[#f5f1ca]/15 hover:border-[#f2eb87] transition-all space-y-4 shadow-sm relative">
+                  <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full border-2 border-[#f2eb87] bg-[#161512] z-20" />
                   <div className="flex items-center gap-2.5 pb-3 border-b border-[#f5f1ca]/10 text-[#f2eb87]">
                     <Heart className="w-4 h-4" />
                     <span className="font-serif-title font-bold text-base text-[#f5f1ca]">

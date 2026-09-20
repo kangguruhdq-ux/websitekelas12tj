@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useClassData } from '@/context/ClassDataContext';
 import { Mail, Shield, Sparkles, MapPin, Phone } from 'lucide-react';
 
@@ -43,6 +44,7 @@ function YoutubeIcon({ className }: { className?: string }) {
 
 export default function Footer() {
   const { settings } = useClassData();
+  const pathname = usePathname();
 
   const instagramLink =
     settings.instagram_url ||
@@ -50,6 +52,10 @@ export default function Footer() {
   const tiktokLink =
     settings.tiktok_url ||
     'https://www.tiktok.com/@networkcomp.27?_r=1&_t=ZS-99sUSsU8y0t';
+
+  if (pathname?.startsWith('/admin')) {
+    return null;
+  }
 
   return (
     <footer className="relative border-t border-[#f5f1ca]/15 bg-[#12110e] text-[#d8d6c6] overflow-hidden">

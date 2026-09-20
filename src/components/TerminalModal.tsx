@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Terminal, X, Minimize2, Maximize2, Sparkles, Monitor } from 'lucide-react';
 import { useClassData } from '@/context/ClassDataContext';
@@ -13,6 +14,7 @@ interface TerminalLine {
 
 export default function TerminalModal() {
   const { settings, students } = useClassData();
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [isMaximized, setIsMaximized] = useState(false);
   const [inputVal, setInputVal] = useState('');
@@ -291,6 +293,10 @@ drwxr-xr-x 2 root root 4.0K Sep 20 2026 .
 
     setLines((prev) => [...prev, newCmdLine, ...outputLines]);
   };
+
+  if (pathname?.startsWith('/admin')) {
+    return null;
+  }
 
   return (
     <>

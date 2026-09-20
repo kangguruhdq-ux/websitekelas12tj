@@ -57,7 +57,7 @@ export default function AdminMediaPage() {
     }
 
     // 2. Student photos
-    students.forEach((s) => {
+    (students || []).forEach((s) => {
       if (s.photo_url) {
         list.push({
           id: `std-photo-${s.id}`,
@@ -69,7 +69,7 @@ export default function AdminMediaPage() {
     });
 
     // 3. Gallery photos
-    gallery.forEach((g) => {
+    (gallery || []).forEach((g) => {
       if (g.image_url) {
         list.push({
           id: `gal-photo-${g.id}`,
@@ -82,7 +82,7 @@ export default function AdminMediaPage() {
     });
 
     // 4. Announcement covers
-    announcements.forEach((a) => {
+    (announcements || []).forEach((a) => {
       if (a.cover_url) {
         list.push({
           id: `ann-photo-${a.id}`,
@@ -94,7 +94,7 @@ export default function AdminMediaPage() {
     });
 
     // 5. Custom uploaded items in this session
-    customUploads.forEach((c) => list.unshift(c));
+    (customUploads || []).forEach((c) => list.unshift(c));
 
     return list;
   }, [students, gallery, announcements, settings, customUploads]);
@@ -147,7 +147,7 @@ export default function AdminMediaPage() {
   };
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
+    <div className="space-y-6 max-w-7xl mx-auto w-full min-w-0">
       {/* Header & Quick Action */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
