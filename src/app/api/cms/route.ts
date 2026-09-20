@@ -13,6 +13,7 @@ import {
   TimeCapsuleMessage,
   MemoryNote,
   SuperlativeAward,
+  ClassProject,
 } from '@/types';
 import { isAdminAuthenticated } from '@/lib/auth';
 
@@ -161,6 +162,46 @@ export async function POST(req: Request) {
         const { id } = payload as { id: string };
         const updatedGallery = current.gallery.filter((g) => g.id !== id);
         const updated = await saveCMSData({ ...current, gallery: updatedGallery });
+        return NextResponse.json({ success: true, data: updated });
+      }
+
+      case 'upsert_project': {
+        const item = payload as ClassProject;
+        const existing = current.projects || [];
+        const exists = existing.some((p) => p.id === item.id);
+        const updatedProjects = exists
+          ? existing.map((p) => (p.id === item.id ? { ...item, updated_at: new Date().toISOString() } : p))
+          : [{ ...item, created_at: new Date().toISOString(), updated_at: new Date().toISOString() }, ...existing];
+
+        // Sort by display_order
+        updatedProjects.sort((a, b) => (a.display_order ?? 99) - (b.display_order ?? 99));
+
+        const updated = await saveCMSData({ ...current, projects: updatedProjects });
+        return NextResponse.json({ success: true, data: updated });
+      }
+
+      case 'delete_project': {
+        const { id } = payload as { id: string };
+        const updatedProjects = (current.projects || []).filter((p) => p.id !== id);
+        const updated = await saveCMSData({ ...current, projects: updatedProjects });
+        return NextResponse.json({ success: true, data: updated });
+      }
+
+      case 'toggle_project_publish': {
+        const { id, is_published } = payload as { id: string; is_published: boolean };
+        const updatedProjects = (current.projects || []).map((p) =>
+          p.id === id ? { ...p, is_published, updated_at: new Date().toISOString() } : p
+        );
+        const updated = await saveCMSData({ ...current, projects: updatedProjects });
+        return NextResponse.json({ success: true, data: updated });
+      }
+
+      case 'toggle_project_feature': {
+        const { id, is_featured } = payload as { id: string; is_featured: boolean };
+        const updatedProjects = (current.projects || []).map((p) =>
+          p.id === id ? { ...p, is_featured, updated_at: new Date().toISOString() } : p
+        );
+        const updated = await saveCMSData({ ...current, projects: updatedProjects });
         return NextResponse.json({ success: true, data: updated });
       }
 

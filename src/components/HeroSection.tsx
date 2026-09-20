@@ -12,14 +12,19 @@ import {
   CheckCircle2,
   Cpu,
   GraduationCap,
+  FolderGit2,
 } from 'lucide-react';
+import Link from 'next/link';
 
 export default function HeroSection() {
   const { settings, students } = useClassData();
 
   return (
-    <section className="relative min-h-[85vh] sm:min-h-[90vh] flex items-center justify-center pt-8 pb-16 overflow-hidden bem-grid bg-[#161512]">
-      {/* Animated Warm Ambient Gold Glows (BEM FEB UI Signature) */}
+    <section
+      className="relative min-h-[85vh] sm:min-h-[90vh] flex items-center justify-center pt-8 pb-16 overflow-hidden bem-grid"
+      style={{ backgroundColor: 'var(--bg-primary)' }}
+    >
+      {/* Animated Warm Ambient Glows */}
       <motion.div
         animate={{
           scale: [1, 1.18, 1],
@@ -30,7 +35,8 @@ export default function HeroSection() {
           duration: 8,
           ease: 'easeInOut',
         }}
-        className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] sm:w-[850px] h-[450px] bg-gradient-to-tr from-[#f2eb87]/20 via-[#f5f1ca]/10 to-transparent rounded-full blur-3xl pointer-events-none"
+        className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] sm:w-[850px] h-[450px] rounded-full blur-3xl pointer-events-none"
+        style={{ backgroundColor: 'var(--theme-glow)' }}
       />
       <motion.div
         animate={{
@@ -43,7 +49,8 @@ export default function HeroSection() {
           delay: 1,
           ease: 'easeInOut',
         }}
-        className="absolute bottom-10 right-10 w-96 h-96 bg-[#f2eb87]/15 rounded-full blur-3xl pointer-events-none"
+        className="absolute bottom-10 right-10 w-96 h-96 rounded-full blur-3xl pointer-events-none"
+        style={{ backgroundColor: 'var(--theme-glow)' }}
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
@@ -55,7 +62,7 @@ export default function HeroSection() {
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             className="lg:col-span-7 space-y-6 text-center lg:text-left"
           >
-            {/* Cabinet Identity Badge with Gentle Float */}
+            {/* Angkatan 27 Official Identity Badge */}
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -65,39 +72,47 @@ export default function HeroSection() {
               <motion.div
                 animate={{ y: [0, -4, 0] }}
                 transition={{ repeat: Infinity, duration: 4, ease: 'easeInOut' }}
-                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-[#1f1d19] text-[#f2eb87] border border-[#f2eb87]/30 shadow-lg shadow-black/40 hover:border-[#f2eb87] transition-colors cursor-default"
+                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold border shadow-lg cursor-default"
+                style={{
+                  backgroundColor: 'var(--bg-card)',
+                  borderColor: 'var(--border-theme)',
+                  color: 'var(--color-theme)',
+                }}
               >
-                <Sparkles className="w-3.5 h-3.5 text-[#f2eb87]" />
-                <span className="tracking-wide uppercase">
-                  {settings.tagline || 'Class of 2026/2027'}
+                <Sparkles className="w-3.5 h-3.5" style={{ color: 'var(--color-theme)' }} />
+                <span className="tracking-wide uppercase font-bold">
+                  ANGKATAN 27
                 </span>
-                <span className="w-1.5 h-1.5 rounded-full bg-[#f2eb87]" />
-                <span className="text-[#d8d6c6]">Tingkat XII TKJ</span>
+                <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: 'var(--color-theme)' }} />
+                <span style={{ color: 'var(--text-body)' }}>XII TJ • Teknik Komputer dan Jaringan</span>
               </motion.div>
             </motion.div>
 
-            {/* Slogan & Title (BEM FEB UI Editorial Serif Style) */}
+            {/* Slogan & Title */}
             <div className="space-y-3">
               <div className="flex items-center justify-center lg:justify-start gap-2">
                 <motion.span
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
                   transition={{ delay: 0.25, duration: 0.6 }}
-                  className="w-8 h-[1px] bg-[#f2eb87]/60 origin-left"
+                  className="w-8 h-[1px] origin-left"
+                  style={{ backgroundColor: 'var(--color-theme)' }}
                 />
                 <motion.p
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.25, duration: 0.5 }}
-                  className="text-xs sm:text-sm uppercase tracking-[0.25em] font-semibold text-[#f2eb87]"
+                  className="text-xs sm:text-sm uppercase tracking-[0.25em] font-semibold"
+                  style={{ color: 'var(--color-theme)' }}
                 >
-                  BRIDGING EXCELLENCE
+                  BRIDGING EXCELLENCE &bull; ANGKATAN 27
                 </motion.p>
                 <motion.span
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
                   transition={{ delay: 0.25, duration: 0.6 }}
-                  className="w-8 h-[1px] bg-[#f2eb87]/60 origin-right"
+                  className="w-8 h-[1px] origin-right"
+                  style={{ backgroundColor: 'var(--color-theme)' }}
                 />
               </div>
 
@@ -105,11 +120,12 @@ export default function HeroSection() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                className="text-4xl sm:text-6xl xl:text-7xl font-serif-title font-bold tracking-tight text-[#f5f1ca] leading-[1.1]"
+                className="text-4xl sm:text-6xl xl:text-7xl font-theme-heading font-black tracking-tight leading-[1.1]"
+                style={{ color: 'var(--text-main)' }}
               >
                 WELCOME TO{' '}
-                <span className="italic underline decoration-[#f2eb87]/40 underline-offset-8">
-                  {settings.class_name || 'XII TKJ'}
+                <span className="italic underline underline-offset-8" style={{ textDecorationColor: 'var(--color-theme)' }}>
+                  {settings.class_name?.includes('TJ') ? settings.class_name : 'XII TJ'}
                 </span>
               </motion.h1>
 
@@ -117,9 +133,10 @@ export default function HeroSection() {
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4, duration: 0.6 }}
-                className="text-base sm:text-xl font-medium text-[#d8d6c6] tracking-normal"
+                className="text-base sm:text-xl font-medium tracking-normal"
+                style={{ color: 'var(--text-body)' }}
               >
-                {settings.class_subtitle || 'Teknik Komputer dan Jaringan'} • {settings.academic_year || '2026/2027'}
+                {settings.class_subtitle || 'Teknik Komputer dan Jaringan'} • Angkatan 27 ({settings.academic_year || '2026/2027'})
               </motion.p>
             </div>
 
@@ -128,7 +145,8 @@ export default function HeroSection() {
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5, duration: 0.6 }}
-              className="text-sm sm:text-base text-[#d8d6c6]/80 max-w-xl mx-auto lg:mx-0 leading-relaxed font-normal"
+              className="text-sm sm:text-base max-w-xl mx-auto lg:mx-0 leading-relaxed font-normal"
+              style={{ color: 'var(--text-muted)' }}
             >
               &ldquo;
               {settings.description ||
@@ -136,54 +154,67 @@ export default function HeroSection() {
               &rdquo;
             </motion.p>
 
-            {/* Action Buttons */}
+            {/* Action Buttons: Siswa, Struktur, & Project TKJ */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.6 }}
-              className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2"
+              className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 pt-2"
             >
-              <a
-                href="/siswa"
+              <Link
+                href="/projects"
                 className="btn-bem-primary w-full sm:w-auto inline-flex items-center justify-center gap-2 text-xs hover:-translate-y-0.5 transition-transform"
               >
-                <Users className="w-4 h-4" />
-                <span>Lihat Anggota Kelas</span>
+                <FolderGit2 className="w-4 h-4" />
+                <span>Showcase Project TKJ</span>
                 <ArrowRight className="w-4 h-4 ml-0.5" />
-              </a>
+              </Link>
 
-              <a
+              <Link
+                href="/siswa"
+                className="btn-bem-outline w-full sm:w-auto inline-flex items-center justify-center gap-2 text-xs hover:-translate-y-0.5 transition-transform"
+              >
+                <Users className="w-4 h-4" />
+                <span>Direktori Siswa</span>
+              </Link>
+
+              <Link
                 href="/struktur"
                 className="btn-bem-outline w-full sm:w-auto inline-flex items-center justify-center gap-2 text-xs hover:-translate-y-0.5 transition-transform"
               >
-                <Network className="w-4 h-4 text-[#f2eb87]" />
-                <span>Struktur Kepengurusan</span>
-              </a>
+                <Network className="w-4 h-4" />
+                <span>Struktur Kelas</span>
+              </Link>
             </motion.div>
 
-            {/* BEM FEB UI Quick Stat Counter Bar */}
+            {/* Quick Stat Counter Bar */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.7, duration: 0.6 }}
-              className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-6 border-t border-[#f5f1ca]/15 text-left max-w-xl mx-auto lg:mx-0"
+              className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-6 border-t text-left max-w-xl mx-auto lg:mx-0"
+              style={{ borderColor: 'var(--border-color)' }}
             >
               {[
-                { label: 'Siswa Aktif', value: students.length || 34, color: 'text-[#f2eb87]' },
-                { label: 'Fungsionaris', value: 18, color: 'text-[#f5f1ca]' },
-                { label: 'Wali Kelas', value: 1, color: 'text-[#f2eb87]' },
-                { label: 'Solid & Aktif', value: '100%', color: 'text-[#f5f1ca]' },
-              ].map((stat, i) => (
+                { label: 'Siswa Angkatan 27', value: students.length || 34, color: 'var(--color-theme)' },
+                { label: 'Fungsionaris', value: 18, color: 'var(--text-main)' },
+                { label: 'Wali Kelas', value: 1, color: 'var(--color-theme)' },
+                { label: 'Solidaritas', value: '100%', color: 'var(--text-main)' },
+              ].map((stat) => (
                 <motion.div
                   key={stat.label}
-                  whileHover={{ y: -3, borderColor: 'rgba(242, 235, 135, 0.4)' }}
+                  whileHover={{ y: -3 }}
                   transition={{ duration: 0.2 }}
-                  className="p-3 rounded-xl bg-[#1f1d19] border border-[#f5f1ca]/10 shadow-sm"
+                  className="p-3 rounded-xl border shadow-sm"
+                  style={{
+                    backgroundColor: 'var(--bg-card)',
+                    borderColor: 'var(--border-color)',
+                  }}
                 >
-                  <span className={`block text-2xl font-serif-title font-bold ${stat.color}`}>
+                  <span className="block text-2xl font-theme-heading font-bold" style={{ color: stat.color }}>
                     {stat.value}
                   </span>
-                  <span className="text-[11px] text-[#9e9a8d] uppercase tracking-wider font-semibold">
+                  <span className="text-[10px] uppercase tracking-wider font-semibold" style={{ color: 'var(--text-muted)' }}>
                     {stat.label}
                   </span>
                 </motion.div>
@@ -191,18 +222,28 @@ export default function HeroSection() {
             </motion.div>
           </motion.div>
 
-          {/* Right Column: Hero Visual Frame (BEM FEB UI Double Bezel Frame) */}
+          {/* Right Column: Hero Visual Frame */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.4, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             className="lg:col-span-5 relative"
           >
-            {/* Outer Luxury Champagne Border Frame */}
-            <div className="relative rounded-3xl p-3 bg-[#1f1d19] border border-[#f2eb87]/30 shadow-2xl shadow-black/80 group">
+            <div
+              className="relative rounded-3xl p-3 border shadow-2xl group"
+              style={{
+                backgroundColor: 'var(--bg-card)',
+                borderColor: 'var(--border-theme)',
+              }}
+            >
               {settings.hero_image_url ? (
-                // Official Uploaded Class Hero Photo
-                <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-[#161512] border border-[#f5f1ca]/20 shadow-inner">
+                <div
+                  className="relative aspect-[4/3] rounded-2xl overflow-hidden border shadow-inner"
+                  style={{
+                    backgroundColor: 'var(--bg-primary)',
+                    borderColor: 'var(--border-color)',
+                  }}
+                >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={settings.hero_image_url}
@@ -211,46 +252,36 @@ export default function HeroSection() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex items-end p-5">
                     <div>
-                      <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#f2eb87] text-[#111111]">
-                        Dokumentasi Resmi
+                      <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full" style={{ backgroundColor: 'var(--color-theme)', color: '#050505' }}>
+                        ANGKATAN 27
                       </span>
-                      <p className="text-[#f5f1ca] font-serif-title text-base font-bold mt-1.5">
-                        Keluarga Besar {settings.class_name || 'XII TKJ'}
+                      <p className="font-theme-heading text-base font-bold mt-1.5" style={{ color: 'var(--text-main)' }}>
+                        Keluarga Besar {settings.class_name?.includes('TJ') ? settings.class_name : 'XII TJ'}
                       </p>
-                      <p className="text-[11px] text-[#d8d6c6]">
-                        Tahun Ajaran {settings.academic_year || '2026/2027'}
+                      <p className="text-[11px]" style={{ color: 'var(--text-body)' }}>
+                        SMK Negeri • Teknik Komputer dan Jaringan
                       </p>
                     </div>
                   </div>
                 </div>
               ) : (
-                // Institutional Placeholder Frame
-                <div className="relative aspect-[4/3] rounded-2xl bg-[#161512] border border-[#f5f1ca]/15 p-6 flex flex-col justify-between text-left">
-                  <div className="flex items-center justify-between border-b border-[#f5f1ca]/10 pb-4">
-                    <div className="flex items-center gap-2">
-                      <GraduationCap className="w-5 h-5 text-[#f2eb87]" />
-                      <span className="font-serif-title font-bold text-sm text-[#f5f1ca]">
-                        Official Class Portal
-                      </span>
-                    </div>
-                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-[#f2eb87]/15 text-[#f2eb87]">
-                      XII TKJ
-                    </span>
-                  </div>
-
-                  <div className="space-y-2 py-4">
-                    <p className="font-serif-title text-xl font-bold text-[#f5f1ca]">
-                      &ldquo;Bridging Excellence in Networking&rdquo;
-                    </p>
-                    <p className="text-xs text-[#9e9a8d] leading-relaxed">
-                      Dokumentasi foto utama kelas dapat diunggah melalui menu Pengaturan di Portal Admin.
-                    </p>
-                  </div>
-
-                  <div className="flex items-center justify-between pt-4 border-t border-[#f5f1ca]/10 text-xs text-[#d8d6c6]">
-                    <span>Wali Kelas: {settings.homeroom_teacher || 'Bu Febriyana, S.T.'}</span>
-                    <span className="text-[#f2eb87] font-semibold">Aktif</span>
-                  </div>
+                <div
+                  className="relative aspect-[4/3] rounded-2xl overflow-hidden border flex flex-col items-center justify-center p-6 text-center"
+                  style={{
+                    backgroundColor: 'var(--bg-primary)',
+                    borderColor: 'var(--border-color)',
+                  }}
+                >
+                  <Cpu className="w-16 h-16 mb-4 animate-pulse" style={{ color: 'var(--color-theme)' }} />
+                  <span className="text-xs font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full mb-2" style={{ backgroundColor: 'var(--color-theme-muted)', color: 'var(--color-theme)' }}>
+                    ANGKATAN 27
+                  </span>
+                  <h3 className="text-lg font-theme-heading font-bold" style={{ color: 'var(--text-main)' }}>
+                    {settings.class_name || 'XII TJ'} — Official Portal
+                  </h3>
+                  <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
+                    Teknik Komputer dan Jaringan
+                  </p>
                 </div>
               )}
             </div>

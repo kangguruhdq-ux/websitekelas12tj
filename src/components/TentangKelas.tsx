@@ -71,15 +71,20 @@ export default function TentangKelas() {
             transition={{ duration: 0.6 }}
             className="lg:col-span-6 space-y-5"
           >
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-[#1f1d19] text-[#f2eb87] border border-[#f2eb87]/30">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span className="tracking-widest uppercase">FILOSOFI & IDENTITAS</span>
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-[#1f1d19] text-[#f2eb87] border border-[#f2eb87]/30">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span className="tracking-widest uppercase">FILOSOFI & IDENTITAS</span>
+              </div>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#f2eb87]/15 text-[#f2eb87] border border-[#f2eb87]/40 tracking-wider">
+                ANGKATAN 27
+              </div>
             </div>
 
             <h2 className="text-3xl sm:text-5xl font-serif-title font-bold tracking-tight text-[#f5f1ca] leading-tight">
               Mengenal Keluarga Besar <br />
               <span className="italic text-[#f2eb87]">
-                {settings.class_name || 'XII TKJ'}
+                XII TJ — Teknik Komputer dan Jaringan
               </span>
             </h2>
 

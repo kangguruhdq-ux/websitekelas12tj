@@ -189,6 +189,44 @@ export interface SuperlativeAward {
   votes: number;
 }
 
+export type ProjectCategory =
+  | 'Web Development'
+  | 'Mobile App'
+  | 'Network'
+  | 'Cyber Security'
+  | 'IoT'
+  | 'AI / Machine Learning'
+  | 'System Administration'
+  | 'UI/UX'
+  | 'Other';
+
+export type ProjectStatus = 'In Development' | 'Completed' | 'Maintenance' | 'Archived';
+
+export interface ClassProject {
+  id: string;
+  name: string;
+  slug?: string;
+  short_description: string;
+  full_description: string;
+  cover_url: string;
+  student_creator: string;
+  team_members?: string[];
+  category: ProjectCategory;
+  tech_stack: string[];
+  year: string;
+  status: ProjectStatus;
+  github_url?: string;
+  demo_url?: string;
+  apk_url?: string;
+  key_features?: string[];
+  screenshots?: string[];
+  is_published: boolean;
+  is_featured: boolean;
+  display_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface CMSData {
   version: string;
   timestamp: number;
@@ -198,6 +236,7 @@ export interface CMSData {
   events: EventItem[];
   gallery: GalleryItem[];
   settings: SiteSettings;
+  projects?: ClassProject[];
   time_capsules?: TimeCapsuleMessage[];
   memory_notes?: MemoryNote[];
   superlatives?: SuperlativeAward[];

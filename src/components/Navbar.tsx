@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useClassData } from '@/context/ClassDataContext';
 import { motion, AnimatePresence } from 'framer-motion';
+import ThemeSwitcher from '@/components/ThemeSwitcher';
 import {
   Menu,
   X,
@@ -22,7 +23,7 @@ import {
   Lock,
   Trophy,
   Sparkles,
-  Terminal,
+  FolderGit2,
 } from 'lucide-react';
 
 function InstagramIcon({ className }: { className?: string }) {
@@ -98,33 +99,27 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      if (window.scrollY > 20) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
     };
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Hidden admin shortcut: Ctrl + Shift + A
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
-        e.preventDefault();
-        window.location.href = '/admin';
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
-  const handleMouseEnter = (name: string) => {
-    if (dropdownTimeoutRef.current) clearTimeout(dropdownTimeoutRef.current);
-    setActiveDropdown(name);
+  const handleMouseEnter = (groupName: string) => {
+    if (dropdownTimeoutRef.current) {
+      clearTimeout(dropdownTimeoutRef.current);
+    }
+    setActiveDropdown(groupName);
   };
 
   const handleMouseLeave = () => {
     dropdownTimeoutRef.current = setTimeout(() => {
       setActiveDropdown(null);
-    }, 200);
+    }, 150);
   };
 
   const instagramLink =
@@ -142,52 +137,77 @@ export default function Navbar() {
     <header
       className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
         isScrolled
-          ? 'bg-[#161512]/95 backdrop-blur-md shadow-2xl border-b border-[#f5f1ca]/12 py-3'
-          : 'bg-[#161512]/80 backdrop-blur-sm border-b border-[#f5f1ca]/8 py-4 sm:py-5'
+          ? 'backdrop-blur-md shadow-2xl border-b py-3'
+          : 'backdrop-blur-sm border-b py-4 sm:py-5'
       }`}
+      style={{
+        backgroundColor: isScrolled ? 'rgba(var(--color-theme-rgb), 0.03)' : 'transparent',
+        borderColor: 'var(--border-color)',
+        background: isScrolled ? 'var(--bg-primary)' : undefined,
+      }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
-          {/* Brand Logo & Editorial Title */}
+          {/* Brand Logo & Editorial Title: XII TJ — ANGKATAN 27 */}
           <Link href="/" className="flex items-center gap-3.5 group flex-shrink-0">
-            <div className="relative flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#1f1d19] border border-[#f2eb87]/30 group-hover:border-[#f2eb87] transition-all overflow-hidden shadow-inner">
+            <div
+              className="relative flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-xl border transition-all overflow-hidden shadow-inner group-hover:scale-105"
+              style={{
+                backgroundColor: 'var(--bg-card)',
+                borderColor: 'var(--border-theme)',
+              }}
+            >
               {settings.logo_url && !logoFailed ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={settings.logo_url}
-                  alt={settings.class_name || 'XII TKJ'}
+                  alt={settings.class_name || 'XII TJ'}
                   className="w-full h-full object-cover"
                   onError={() => setLogoFailed(true)}
                 />
               ) : (
-                <span className="font-serif-title text-[#f2eb87] font-bold text-lg">
-                  TKJ
+                <span className="font-theme-heading font-black text-base sm:text-lg" style={{ color: 'var(--color-theme)' }}>
+                  TJ
                 </span>
               )}
             </div>
             <div className="flex flex-col">
-              <span className="text-base sm:text-lg font-serif-title font-bold tracking-tight text-[#f5f1ca] flex items-center gap-2">
-                {settings.class_name || 'XII TKJ'}
-                <span className="text-[10px] font-sans font-semibold px-2 py-0.5 rounded-full bg-[#f2eb87]/15 text-[#f2eb87] border border-[#f2eb87]/30">
-                  {settings.academic_year || '2026/2027'}
+              <div className="flex items-center gap-2">
+                <span className="text-base sm:text-lg font-theme-heading font-black tracking-tight" style={{ color: 'var(--text-main)' }}>
+                  {settings.class_name?.includes('TJ') ? settings.class_name : 'XII TJ'}
                 </span>
-              </span>
-              <span className="text-[11px] text-[#9e9a8d] tracking-wider uppercase font-medium hidden sm:inline-block">
+                <span
+                  className="text-[9px] sm:text-[10px] font-sans font-bold px-2 py-0.5 rounded-full border shadow-sm tracking-wider uppercase"
+                  style={{
+                    backgroundColor: 'var(--color-theme-muted)',
+                    color: 'var(--color-theme)',
+                    borderColor: 'var(--border-theme)',
+                  }}
+                >
+                  ANGKATAN 27
+                </span>
+              </div>
+              <span className="text-[11px] tracking-wider uppercase font-medium hidden sm:inline-block" style={{ color: 'var(--text-muted)' }}>
                 {settings.class_subtitle || 'Teknik Komputer dan Jaringan'}
               </span>
             </div>
           </Link>
 
-          {/* Desktop Nav Links (Clean BEM FEB UI Dropdowns) */}
+          {/* Desktop Nav Links */}
           <nav className="hidden lg:flex items-center gap-1 xl:gap-2">
             {/* 1. Home */}
             <Link
               href="/"
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold uppercase tracking-wider transition-all duration-200 ${
+              className={`px-3 py-1.5 rounded-xl text-xs font-semibold uppercase tracking-wider transition-all duration-200 ${
                 pathname === '/'
-                  ? 'text-[#f2eb87] bg-[#f2eb87]/15 font-bold border border-[#f2eb87]/30'
-                  : 'text-[#d8d6c6]/85 hover:text-[#f2eb87] hover:bg-[#f5f1ca]/5'
+                  ? 'font-bold border'
+                  : 'hover:opacity-100'
               }`}
+              style={{
+                color: pathname === '/' ? 'var(--color-theme)' : 'var(--text-body)',
+                backgroundColor: pathname === '/' ? 'var(--color-theme-muted)' : 'transparent',
+                borderColor: pathname === '/' ? 'var(--border-theme)' : 'transparent',
+              }}
             >
               Home
             </Link>
@@ -195,16 +215,39 @@ export default function Navbar() {
             {/* 2. Tentang */}
             <Link
               href="/tentang"
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold uppercase tracking-wider transition-all duration-200 ${
+              className={`px-3 py-1.5 rounded-xl text-xs font-semibold uppercase tracking-wider transition-all duration-200 ${
                 pathname === '/tentang'
-                  ? 'text-[#f2eb87] bg-[#f2eb87]/15 font-bold border border-[#f2eb87]/30'
-                  : 'text-[#d8d6c6]/85 hover:text-[#f2eb87] hover:bg-[#f5f1ca]/5'
+                  ? 'font-bold border'
+                  : 'hover:opacity-100'
               }`}
+              style={{
+                color: pathname === '/tentang' ? 'var(--color-theme)' : 'var(--text-body)',
+                backgroundColor: pathname === '/tentang' ? 'var(--color-theme-muted)' : 'transparent',
+                borderColor: pathname === '/tentang' ? 'var(--border-theme)' : 'transparent',
+              }}
             >
               Tentang
             </Link>
 
-            {/* 3. Group Dropdowns */}
+            {/* 3. NEW: Project TKJ */}
+            <Link
+              href="/projects"
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold uppercase tracking-wider transition-all duration-200 flex items-center gap-1.5 ${
+                pathname.startsWith('/projects')
+                  ? 'font-bold border shadow-sm'
+                  : 'hover:opacity-100'
+              }`}
+              style={{
+                color: pathname.startsWith('/projects') ? 'var(--color-theme)' : 'var(--text-body)',
+                backgroundColor: pathname.startsWith('/projects') ? 'var(--color-theme-muted)' : 'transparent',
+                borderColor: pathname.startsWith('/projects') ? 'var(--border-theme)' : 'transparent',
+              }}
+            >
+              <FolderGit2 className="w-3.5 h-3.5" style={{ color: 'var(--color-theme)' }} />
+              <span>Project TKJ</span>
+            </Link>
+
+            {/* 4. Group Dropdowns */}
             {NAV_GROUPS.map((group) => {
               const isGroupActive = group.items.some((it) => it.href === pathname);
               const isMenuOpen = activeDropdown === group.name;
@@ -218,21 +261,26 @@ export default function Navbar() {
                 >
                   <button
                     onClick={() => setActiveDropdown(isMenuOpen ? null : group.name)}
-                    className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold uppercase tracking-wider transition-all duration-200 flex items-center gap-1.5 ${
+                    className={`px-3 py-1.5 rounded-xl text-xs font-semibold uppercase tracking-wider transition-all duration-200 flex items-center gap-1.5 ${
                       isGroupActive || isMenuOpen
-                        ? 'text-[#f2eb87] bg-[#f2eb87]/10 font-bold border border-[#f2eb87]/30'
-                        : 'text-[#d8d6c6]/85 hover:text-[#f2eb87] hover:bg-[#f5f1ca]/5'
+                        ? 'font-bold border'
+                        : 'hover:opacity-100'
                     }`}
+                    style={{
+                      color: isGroupActive || isMenuOpen ? 'var(--color-theme)' : 'var(--text-body)',
+                      backgroundColor: isGroupActive || isMenuOpen ? 'var(--color-theme-muted)' : 'transparent',
+                      borderColor: isGroupActive || isMenuOpen ? 'var(--border-theme)' : 'transparent',
+                    }}
                   >
                     <span>{group.name}</span>
                     <ChevronDown
                       className={`w-3.5 h-3.5 transition-transform duration-200 ${
-                        isMenuOpen ? 'rotate-180 text-[#f2eb87]' : 'text-[#9e9a8d]'
+                        isMenuOpen ? 'rotate-180' : ''
                       }`}
+                      style={{ color: isMenuOpen ? 'var(--color-theme)' : 'var(--text-muted)' }}
                     />
                   </button>
 
-                  {/* Dropdown Floating Card */}
                   <AnimatePresence>
                     {isMenuOpen && (
                       <motion.div
@@ -240,7 +288,12 @@ export default function Navbar() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 8, scale: 0.96 }}
                         transition={{ duration: 0.18, ease: 'easeOut' }}
-                        className="absolute top-full left-0 mt-2 w-64 p-2 rounded-2xl bg-[#1a1915]/95 backdrop-blur-xl border border-[#f5f1ca]/15 shadow-2xl shadow-black z-50 space-y-1"
+                        className="absolute top-full left-0 mt-2 w-64 p-2 rounded-2xl backdrop-blur-xl border shadow-2xl z-50 space-y-1"
+                        style={{
+                          backgroundColor: 'var(--bg-card)',
+                          borderColor: 'var(--border-theme)',
+                          boxShadow: '0 20px 40px -15px rgba(0,0,0,0.8), 0 0 20px -5px var(--theme-glow)',
+                        }}
                       >
                         {group.items.map((item) => {
                           const IconComp = item.icon;
@@ -250,26 +303,28 @@ export default function Navbar() {
                               key={item.href}
                               href={item.href}
                               onClick={() => setActiveDropdown(null)}
-                              className={`flex items-start gap-3 p-2.5 rounded-xl transition-all group/item ${
-                                isSubActive
-                                  ? 'bg-[#f2eb87]/15 border border-[#f2eb87]/30 text-[#f2eb87]'
-                                  : 'hover:bg-[#1f1d19] text-[#d8d6c6]'
-                              }`}
+                              className="flex items-start gap-3 p-2.5 rounded-xl transition-all group/item"
+                              style={{
+                                backgroundColor: isSubActive ? 'var(--color-theme-muted)' : 'transparent',
+                                borderColor: isSubActive ? 'var(--border-theme)' : 'transparent',
+                                color: isSubActive ? 'var(--color-theme)' : 'var(--text-body)',
+                              }}
                             >
                               <div
-                                className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-all ${
-                                  isSubActive
-                                    ? 'bg-[#f2eb87] text-[#111111]'
-                                    : 'bg-[#161512] border border-[#f5f1ca]/10 text-[#f2eb87] group-hover/item:border-[#f2eb87]'
-                                }`}
+                                className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-all border"
+                                style={{
+                                  backgroundColor: isSubActive ? 'var(--color-theme)' : 'var(--bg-primary)',
+                                  borderColor: isSubActive ? 'var(--color-theme)' : 'var(--border-color)',
+                                  color: isSubActive ? '#050505' : 'var(--color-theme)',
+                                }}
                               >
                                 <IconComp className="w-4 h-4" />
                               </div>
                               <div className="overflow-hidden">
-                                <span className="font-serif-title font-bold text-xs block text-[#f5f1ca] group-hover/item:text-[#f2eb87] transition-colors leading-tight">
+                                <span className="font-theme-heading font-bold text-xs block transition-colors leading-tight" style={{ color: 'var(--text-main)' }}>
                                   {item.name}
                                 </span>
-                                <span className="text-[10px] text-[#9e9a8d] line-clamp-1 mt-0.5">
+                                <span className="text-[10px] line-clamp-1 mt-0.5" style={{ color: 'var(--text-muted)' }}>
                                   {item.desc}
                                 </span>
                               </div>
@@ -284,15 +339,23 @@ export default function Navbar() {
             })}
           </nav>
 
-          {/* Right Action Icons (Compact luxury pills) */}
+          {/* Right Actions: Theme Switcher & Social Links */}
           <div className="hidden lg:flex items-center gap-2">
+            {/* Global Theme Switcher */}
+            <ThemeSwitcher />
+
             {/* Instagram Link */}
             <a
               href={instagramLink}
               target="_blank"
               rel="noreferrer"
               title="Instagram @networkengineering27"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#1f1d19] border border-[#f5f1ca]/15 text-xs text-[#d8d6c6] hover:text-[#f2eb87] hover:border-[#f2eb87]/40 transition-all group"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs transition-all group"
+              style={{
+                backgroundColor: 'var(--bg-card)',
+                borderColor: 'var(--border-color)',
+                color: 'var(--text-body)',
+              }}
             >
               <InstagramIcon className="w-4 h-4 text-pink-400 group-hover:scale-110 transition-transform" />
               <span className="text-[11px] font-medium tracking-wide">Instagram</span>
@@ -304,35 +367,30 @@ export default function Navbar() {
               target="_blank"
               rel="noreferrer"
               title="TikTok @networkcomp.27"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#1f1d19] border border-[#f5f1ca]/15 text-xs text-[#d8d6c6] hover:text-[#f2eb87] hover:border-[#f2eb87]/40 transition-all group"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs transition-all group"
+              style={{
+                backgroundColor: 'var(--bg-card)',
+                borderColor: 'var(--border-color)',
+                color: 'var(--text-body)',
+              }}
             >
               <TikTokIcon className="w-4 h-4 text-cyan-400 group-hover:scale-110 transition-transform" />
               <span className="text-[11px] font-medium tracking-wide">TikTok</span>
             </a>
           </div>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Right Bar: Theme Switcher & Hamburger */}
           <div className="flex lg:hidden items-center gap-2">
-            <a
-              href={instagramLink}
-              target="_blank"
-              rel="noreferrer"
-              className="p-2 text-[#d8d6c6] hover:text-[#f2eb87]"
-            >
-              <InstagramIcon className="w-4 h-4 text-pink-400" />
-            </a>
-            <a
-              href={tiktokLink}
-              target="_blank"
-              rel="noreferrer"
-              className="p-2 text-[#d8d6c6] hover:text-[#f2eb87]"
-            >
-              <TikTokIcon className="w-4 h-4 text-cyan-400" />
-            </a>
+            <ThemeSwitcher />
 
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-xl bg-[#1f1d19] border border-[#f5f1ca]/15 text-[#f5f1ca] hover:text-[#f2eb87] transition-colors"
+              className="p-2 rounded-xl border transition-colors"
+              style={{
+                backgroundColor: 'var(--bg-card)',
+                borderColor: 'var(--border-color)',
+                color: 'var(--text-main)',
+              }}
               aria-label="Toggle menu"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -349,33 +407,55 @@ export default function Navbar() {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
-            className="lg:hidden bg-[#161512] border-b border-[#f5f1ca]/15 overflow-hidden"
+            className="lg:hidden border-b overflow-hidden backdrop-blur-xl"
+            style={{
+              backgroundColor: 'var(--bg-primary)',
+              borderColor: 'var(--border-color)',
+            }}
           >
             <div className="max-w-7xl mx-auto px-4 py-5 space-y-4 max-h-[80vh] overflow-y-auto">
-              <div className="grid grid-cols-2 gap-2 pb-3 border-b border-[#f5f1ca]/10">
+              {/* Quick links: Home, Tentang, Project TKJ */}
+              <div className="grid grid-cols-3 gap-2 pb-3 border-b border-white/10">
                 <Link
                   href="/"
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`p-3 rounded-xl text-center text-xs font-bold uppercase tracking-wider ${
-                    pathname === '/' ? 'bg-[#f2eb87] text-[#111111]' : 'bg-[#1f1d19] text-[#f5f1ca]'
-                  }`}
+                  className="p-2.5 rounded-xl text-center text-xs font-bold uppercase tracking-wider transition-all"
+                  style={{
+                    backgroundColor: pathname === '/' ? 'var(--color-theme)' : 'var(--bg-card)',
+                    color: pathname === '/' ? '#050505' : 'var(--text-main)',
+                  }}
                 >
                   Home
                 </Link>
                 <Link
                   href="/tentang"
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`p-3 rounded-xl text-center text-xs font-bold uppercase tracking-wider ${
-                    pathname === '/tentang' ? 'bg-[#f2eb87] text-[#111111]' : 'bg-[#1f1d19] text-[#f5f1ca]'
-                  }`}
+                  className="p-2.5 rounded-xl text-center text-xs font-bold uppercase tracking-wider transition-all"
+                  style={{
+                    backgroundColor: pathname === '/tentang' ? 'var(--color-theme)' : 'var(--bg-card)',
+                    color: pathname === '/tentang' ? '#050505' : 'var(--text-main)',
+                  }}
                 >
                   Tentang
                 </Link>
+                <Link
+                  href="/projects"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="p-2.5 rounded-xl text-center text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-1"
+                  style={{
+                    backgroundColor: pathname.startsWith('/projects') ? 'var(--color-theme)' : 'var(--bg-card)',
+                    color: pathname.startsWith('/projects') ? '#050505' : 'var(--text-main)',
+                  }}
+                >
+                  <FolderGit2 className="w-3.5 h-3.5" />
+                  <span>Projects</span>
+                </Link>
               </div>
 
+              {/* Navigation Groups */}
               {NAV_GROUPS.map((group) => (
                 <div key={group.name} className="space-y-1.5">
-                  <span className="text-[10px] uppercase font-bold tracking-widest text-[#f2eb87] px-2 block">
+                  <span className="text-[10px] uppercase font-bold tracking-widest px-2 block" style={{ color: 'var(--color-theme)' }}>
                     {group.name}
                   </span>
                   <div className="space-y-1">
@@ -387,13 +467,14 @@ export default function Navbar() {
                           key={item.href}
                           href={item.href}
                           onClick={() => setMobileMenuOpen(false)}
-                          className={`flex items-center gap-3 p-2.5 rounded-xl text-xs font-medium transition-all ${
-                            isActive
-                              ? 'bg-[#f2eb87]/15 text-[#f2eb87] border border-[#f2eb87]/30 font-bold'
-                              : 'text-[#d8d6c6] hover:bg-[#1f1d19] hover:text-[#f2eb87]'
-                          }`}
+                          className="flex items-center gap-3 p-2.5 rounded-xl text-xs font-medium transition-all"
+                          style={{
+                            backgroundColor: isActive ? 'var(--color-theme-muted)' : 'transparent',
+                            color: isActive ? 'var(--color-theme)' : 'var(--text-body)',
+                            fontWeight: isActive ? 700 : 500,
+                          }}
                         >
-                          <IconComp className="w-4 h-4 text-[#f2eb87]" />
+                          <IconComp className="w-4 h-4" style={{ color: 'var(--color-theme)' }} />
                           <span>{item.name}</span>
                         </Link>
                       );
@@ -403,17 +484,28 @@ export default function Navbar() {
               ))}
 
               {/* Portal Admin Mobile Access */}
-              <div className="pt-3 border-t border-[#f5f1ca]/10">
+              <div className="pt-3 border-t border-white/10">
                 <Link
                   href="/admin"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center justify-between p-3 rounded-xl bg-[#1f1d19] border border-[#f2eb87]/30 text-[#f2eb87] font-semibold text-xs transition-all hover:bg-[#f2eb87]/15 active:scale-[0.99]"
+                  className="flex items-center justify-between p-3 rounded-xl border font-semibold text-xs transition-all"
+                  style={{
+                    backgroundColor: 'var(--bg-card)',
+                    borderColor: 'var(--border-theme)',
+                    color: 'var(--color-theme)',
+                  }}
                 >
                   <div className="flex items-center gap-2.5">
-                    <Lock className="w-4 h-4 text-[#f2eb87]" />
+                    <Lock className="w-4 h-4" style={{ color: 'var(--color-theme)' }} />
                     <span>Portal Admin Kelas</span>
                   </div>
-                  <span className="text-[10px] px-2 py-0.5 rounded-md bg-[#f2eb87]/20 text-[#f2eb87] font-mono uppercase tracking-wider">
+                  <span
+                    className="text-[10px] px-2 py-0.5 rounded-md font-mono uppercase tracking-wider"
+                    style={{
+                      backgroundColor: 'var(--color-theme-muted)',
+                      color: 'var(--color-theme)',
+                    }}
+                  >
                     Masuk
                   </span>
                 </Link>

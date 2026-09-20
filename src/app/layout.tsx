@@ -9,15 +9,15 @@ import TerminalModal from '@/components/TerminalModal';
 import { getCMSData } from '@/lib/storage';
 
 export const metadata: Metadata = {
-  title: 'XII TKJ — Teknik Komputer dan Jaringan',
-  description: 'Portal resmi kelas XII Teknik Komputer dan Jaringan. Class of 2026/2027.',
-  keywords: ['XII TKJ', 'Teknik Komputer dan Jaringan', 'Portal Kelas', 'Class Portal', 'Sekolah'],
-  authors: [{ name: 'Keluarga Besar XII TKJ' }],
+  title: 'XII TJ — Angkatan 27 | Teknik Komputer dan Jaringan',
+  description: 'Portal resmi XII TJ (Teknik Komputer dan Jaringan) Angkatan 27. Wadah kebersamaan, persaudaraan, dan showcase karya teknologi siswa.',
+  keywords: ['XII TJ', 'Angkatan 27', 'Teknik Komputer dan Jaringan', 'XII TKJ', 'Portal Kelas', 'Project TKJ'],
+  authors: [{ name: 'Keluarga Besar XII TJ Angkatan 27' }],
   openGraph: {
-    title: 'XII TKJ — Teknik Komputer dan Jaringan',
-    description: 'Portal resmi kelas XII Teknik Komputer dan Jaringan. Class of 2026/2027.',
+    title: 'XII TJ — Angkatan 27 | Teknik Komputer dan Jaringan',
+    description: 'Portal resmi XII TJ (Teknik Komputer dan Jaringan) Angkatan 27. Wadah kebersamaan, persaudaraan, dan showcase karya teknologi siswa.',
     url: 'https://tkj-class.vercel.app',
-    siteName: 'XII TKJ Class Portal',
+    siteName: 'XII TJ Angkatan 27 Portal',
     locale: 'id_ID',
     type: 'website',
   },
@@ -37,8 +37,8 @@ export default async function RootLayout({
   const initialData = await getCMSData(true);
 
   return (
-    <html lang="id" className="dark scroll-smooth" suppressHydrationWarning>
-      <body className="antialiased min-h-screen flex flex-col bg-[#faf8f5] dark:bg-[#161512] text-[#161512] dark:text-[#d8d6c6] transition-colors duration-300">
+    <html lang="id" className="dark theme-gold scroll-smooth" suppressHydrationWarning>
+      <body className="antialiased min-h-screen flex flex-col transition-colors duration-300" style={{ backgroundColor: 'var(--bg-primary)', color: 'var(--text-body)' }}>
         <ThemeProvider>
           <ClassDataProvider initialData={initialData}>
             <Navbar />

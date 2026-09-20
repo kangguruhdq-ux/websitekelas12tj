@@ -13,6 +13,7 @@ import {
   MemoryNote,
   SuperlativeAward,
   DayScheduleItem,
+  ClassProject,
 } from '@/types';
 import { INITIAL_CMS_DATA } from '@/lib/seed-data';
 
@@ -30,6 +31,7 @@ interface ClassDataContextType {
   events: EventItem[];
   gallery: GalleryItem[];
   settings: SiteSettings;
+  projects: ClassProject[];
   timeCapsules: TimeCapsuleMessage[];
   memoryNotes: MemoryNote[];
   superlatives: SuperlativeAward[];
@@ -50,6 +52,10 @@ interface ClassDataContextType {
   deleteEvent: (id: string) => Promise<boolean>;
   upsertGallery: (item: GalleryItem) => Promise<boolean>;
   deleteGallery: (id: string) => Promise<boolean>;
+  upsertProject: (item: ClassProject) => Promise<boolean>;
+  deleteProject: (id: string) => Promise<boolean>;
+  toggleProjectPublish: (id: string, is_published: boolean) => Promise<boolean>;
+  toggleProjectFeature: (id: string, is_featured: boolean) => Promise<boolean>;
   addTimeCapsule: (item: TimeCapsuleMessage) => Promise<boolean>;
   addMemoryNote: (item: MemoryNote) => Promise<boolean>;
   likeMemoryNote: (id: string) => Promise<boolean>;
@@ -345,6 +351,26 @@ export function ClassDataProvider({
     [runMutation]
   );
 
+  const upsertProject = useCallback(
+    async (item: ClassProject) => runMutation('upsert_project', item),
+    [runMutation]
+  );
+
+  const deleteProject = useCallback(
+    async (id: string) => runMutation('delete_project', { id }),
+    [runMutation]
+  );
+
+  const toggleProjectPublish = useCallback(
+    async (id: string, is_published: boolean) => runMutation('toggle_project_publish', { id, is_published }),
+    [runMutation]
+  );
+
+  const toggleProjectFeature = useCallback(
+    async (id: string, is_featured: boolean) => runMutation('toggle_project_feature', { id, is_featured }),
+    [runMutation]
+  );
+
   return (
     <ClassDataContext.Provider
       value={{
@@ -354,6 +380,7 @@ export function ClassDataProvider({
         announcements: data.announcements || [],
         events: data.events || [],
         gallery: data.gallery || [],
+        projects: data.projects || INITIAL_CMS_DATA.projects || [],
         settings: data.settings || INITIAL_CMS_DATA.settings,
         timeCapsules: data.time_capsules || [],
         memoryNotes: data.memory_notes || [],
@@ -374,6 +401,10 @@ export function ClassDataProvider({
         deleteEvent,
         upsertGallery,
         deleteGallery,
+        upsertProject,
+        deleteProject,
+        toggleProjectPublish,
+        toggleProjectFeature,
         addTimeCapsule,
         addMemoryNote,
         likeMemoryNote,

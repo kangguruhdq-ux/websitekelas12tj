@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useClassData } from '@/context/ClassDataContext';
 import { useTheme } from '@/context/ThemeContext';
 import { motion, AnimatePresence } from 'framer-motion';
+import ThemeSwitcher from '@/components/ThemeSwitcher';
 import {
   LayoutDashboard,
   Users,
@@ -24,12 +25,14 @@ import {
   Cpu,
   Sparkles,
   Clock,
+  FolderGit2,
 } from 'lucide-react';
 
 const ADMIN_NAV = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
   { name: 'Siswa', href: '/admin/siswa', icon: Users },
   { name: 'Struktur Kelas', href: '/admin/struktur', icon: Network },
+  { name: 'Projects TKJ', href: '/admin/projects', icon: FolderGit2 },
   { name: 'Jadwal & Piket', href: '/admin/jadwal', icon: Clock },
   { name: 'Pengumuman', href: '/admin/pengumuman', icon: Bell },
   { name: 'Agenda', href: '/admin/agenda', icon: Calendar },
@@ -43,8 +46,7 @@ const ADMIN_NAV = [
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { isSyncing, lastSynced, refreshData } = useClassData();
-  const { theme, toggleTheme } = useTheme();
+  const { isSyncing, refreshData } = useClassData();
 
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [checkingAuth, setCheckingAuth] = useState(true);
@@ -98,40 +100,45 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     }
   };
 
+  // If on login route, render bare page without admin chrome
   if (isLoginPage) {
-    return <>{children}</>;
+    return <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-primary)' }}>{children}</div>;
   }
 
-  if (checkingAuth) {
+  // Loading barrier until session verification finishes
+  if (checkingAuth && !isAuthenticated) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#161512] text-[#f2eb87]">
-        <div className="flex flex-col items-center gap-3">
-          <RefreshCw className="w-8 h-8 animate-spin text-[#f2eb87]" />
-          <p className="text-xs font-mono tracking-widest text-[#d8d6c6]">MEMVERIFIKASI AKSES PORTAL ADMIN...</p>
+      <div className="min-h-screen flex flex-col items-center justify-center p-4" style={{ backgroundColor: 'var(--bg-primary)' }}>
+        <div className="w-12 h-12 rounded-2xl border flex items-center justify-center shadow-lg animate-pulse" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-theme)' }}>
+          <Cpu className="w-6 h-6" style={{ color: 'var(--color-theme)' }} />
         </div>
+        <p className="mt-4 text-xs font-mono uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>
+          Memverifikasi Sesi Admin...
+        </p>
       </div>
     );
   }
 
-  if (!isAuthenticated) {
-    return null;
-  }
-
   return (
-    <div className="min-h-screen bg-[#161512] text-[#d8d6c6] flex flex-col md:flex-row">
-      {/* Desktop Sidebar (BEM FEB UI Obsidian Style) */}
-      <aside className="hidden md:flex flex-col w-64 bg-[#141310] border-r border-[#f5f1ca]/10 flex-shrink-0 min-h-screen">
+    <div className="min-h-screen flex flex-col md:flex-row transition-colors duration-300" style={{ backgroundColor: 'var(--bg-primary)', color: 'var(--text-body)' }}>
+      {/* Desktop Sidebar */}
+      <aside className="hidden md:flex flex-col w-64 border-r flex-shrink-0 min-h-screen transition-colors" style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--border-color)' }}>
         {/* Brand */}
-        <div className="h-20 px-6 border-b border-[#f5f1ca]/10 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-[#1f1d19] border border-[#f2eb87]/30 text-[#f2eb87] flex items-center justify-center shadow-inner">
+        <div className="h-20 px-6 border-b flex items-center gap-3" style={{ borderColor: 'var(--border-color)' }}>
+          <div className="w-10 h-10 rounded-xl border flex items-center justify-center shadow-inner" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-theme)', color: 'var(--color-theme)' }}>
             <Cpu className="w-5 h-5" />
           </div>
           <div>
-            <span className="font-serif-title font-bold text-base text-[#f5f1ca] block leading-tight">
-              XII TKJ Admin
-            </span>
-            <span className="text-[10px] text-[#f2eb87] font-semibold tracking-widest uppercase">
-              Management Portal
+            <div className="flex items-center gap-1.5">
+              <span className="font-theme-heading font-bold text-base block leading-tight" style={{ color: 'var(--text-main)' }}>
+                XII TJ Admin
+              </span>
+              <span className="text-[8px] font-bold px-1.5 py-0.2 rounded border" style={{ backgroundColor: 'var(--color-theme-muted)', color: 'var(--color-theme)', borderColor: 'var(--border-theme)' }}>
+                A-27
+              </span>
+            </div>
+            <span className="text-[10px] font-semibold tracking-widest uppercase" style={{ color: 'var(--color-theme)' }}>
+              Portal Manajemen
             </span>
           </div>
         </div>
@@ -147,11 +154,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 href={item.href}
                 className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
                   isActive
-                    ? 'bg-[#f2eb87] text-[#161512] font-bold shadow-md shadow-[#f2eb87]/20'
-                    : 'text-[#d8d6c6]/80 hover:text-[#f2eb87] hover:bg-[#f5f1ca]/5'
+                    ? 'font-bold shadow-md'
+                    : 'hover:opacity-100'
                 }`}
+                style={{
+                  backgroundColor: isActive ? 'var(--color-theme)' : 'transparent',
+                  color: isActive ? '#050505' : 'var(--text-body)',
+                  boxShadow: isActive ? '0 4px 14px -2px var(--theme-glow)' : 'none',
+                }}
               >
-                <Icon className={`w-4 h-4 ${isActive ? 'text-[#161512]' : 'text-[#f5f1ca]/60 group-hover:text-[#f2eb87]'}`} />
+                <Icon className="w-4 h-4 flex-shrink-0" style={{ color: isActive ? '#050505' : 'var(--color-theme)' }} />
                 <span>{item.name}</span>
               </Link>
             );
@@ -159,20 +171,21 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
 
         {/* Sidebar Footer */}
-        <div className="p-4 border-t border-[#f5f1ca]/10 space-y-2">
+        <div className="p-4 border-t space-y-2" style={{ borderColor: 'var(--border-color)' }}>
           <Link
             href="/"
-            className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium text-[#d8d6c6]/80 hover:text-[#f2eb87] hover:bg-[#f5f1ca]/5 transition-colors"
+            className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-colors hover:opacity-100"
+            style={{ color: 'var(--text-muted)' }}
           >
             <span className="flex items-center gap-2">
-              <ExternalLink className="w-3.5 h-3.5" />
+              <ExternalLink className="w-3.5 h-3.5" style={{ color: 'var(--color-theme)' }} />
               <span>Lihat Website Publik</span>
             </span>
           </Link>
 
           <button
             onClick={handleLogout}
-            className="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs font-semibold text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors"
+            className="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs font-semibold text-rose-400 hover:bg-rose-500/10 hover:text-rose-300 transition-colors"
           >
             <LogOut className="w-3.5 h-3.5" />
             <span>Keluar (Logout)</span>
@@ -183,23 +196,29 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Topbar */}
-        <header className="h-16 sm:h-20 px-4 sm:px-6 bg-[#161512]/90 backdrop-blur-md border-b border-[#f5f1ca]/10 flex items-center justify-between sticky top-0 z-30">
+        <header className="h-16 sm:h-20 px-4 sm:px-6 backdrop-blur-md border-b flex items-center justify-between sticky top-0 z-30 transition-colors" style={{ backgroundColor: 'var(--bg-primary)', borderColor: 'var(--border-color)' }}>
           <div className="flex items-center gap-2.5 sm:gap-3">
             {/* Mobile Navigation Drawer Trigger */}
             <button
               onClick={() => setMobileSidebarOpen(true)}
-              className="md:hidden flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#1f1d19] border border-[#f5f1ca]/15 text-[#f5f1ca] hover:text-[#f2eb87] hover:border-[#f2eb87]/40 transition-all active:scale-95 shadow-sm"
+              className="md:hidden flex items-center gap-2 px-3 py-1.5 rounded-xl border transition-all active:scale-95 shadow-sm"
+              style={{
+                backgroundColor: 'var(--bg-card)',
+                borderColor: 'var(--border-color)',
+                color: 'var(--text-main)',
+              }}
               aria-label="Buka menu navigasi admin"
             >
-              <Menu className="w-4 h-4 text-[#f2eb87]" />
-              <span className="text-xs font-serif-title font-bold">Menu Admin</span>
+              <Menu className="w-4 h-4" style={{ color: 'var(--color-theme)' }} />
+              <span className="text-xs font-bold">Menu Admin</span>
             </button>
 
             <Link
               href="/admin"
-              className="hidden xs:inline-block md:hidden text-xs font-mono font-bold text-[#9e9a8d] hover:text-[#f2eb87] transition-colors"
+              className="hidden xs:inline-block md:hidden text-xs font-mono font-bold"
+              style={{ color: 'var(--text-muted)' }}
             >
-              XII TKJ
+              XII TJ
             </Link>
 
             {/* Sync Status Badge */}
@@ -208,12 +227,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 onClick={() => refreshData(true)}
                 disabled={isSyncing}
                 title="Sinkronisasi Data"
-                className="p-1.5 rounded-lg text-[#9e9a8d] hover:text-[#f2eb87] hover:bg-[#f5f1ca]/10 transition-colors"
+                className="p-1.5 rounded-lg transition-colors hover:opacity-100"
+                style={{ color: 'var(--text-muted)' }}
               >
-                <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin text-[#f2eb87]' : ''}`} />
+                <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} style={{ color: isSyncing ? 'var(--color-theme)' : undefined }} />
               </button>
-              <div className="hidden sm:flex items-center gap-2 text-[#9e9a8d] text-[11px] px-2.5 py-1 rounded-full bg-[#1f1d19] border border-[#f5f1ca]/10">
-                <span className={`w-2 h-2 rounded-full ${isSyncing ? 'bg-[#f2eb87] animate-pulse' : 'bg-emerald-400'}`} />
+              <div className="hidden sm:flex items-center gap-2 text-[11px] px-2.5 py-1 rounded-full border" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)', color: 'var(--text-muted)' }}>
+                <span className={`w-2 h-2 rounded-full ${isSyncing ? 'animate-pulse' : 'bg-emerald-400'}`} style={{ backgroundColor: isSyncing ? 'var(--color-theme)' : undefined }} />
                 <span>
                   {isSyncing ? 'Menyinkronkan...' : 'Database Sinkron'}
                 </span>
@@ -222,16 +242,21 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </div>
 
           <div className="flex items-center gap-3">
+            {/* Global Theme Switcher inside Admin */}
+            <ThemeSwitcher />
+
             {/* Admin Profile Pill */}
-            <div className="flex items-center gap-2.5 pl-3 border-l border-[#f5f1ca]/10">
-              <div className="w-8 h-8 rounded-full bg-[#f2eb87] text-[#161512] flex items-center justify-center text-xs font-bold shadow-sm">
+            <div className="flex items-center gap-2.5 pl-3 border-l" style={{ borderColor: 'var(--border-color)' }}>
+              <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shadow-sm" style={{ backgroundColor: 'var(--color-theme)', color: '#050505' }}>
                 AD
               </div>
               <div className="hidden sm:block text-left text-xs">
-                <span className="font-serif-title font-bold block text-[#f5f1ca] leading-tight">
-                  Admin TKJ
+                <span className="font-bold block leading-tight" style={{ color: 'var(--text-main)' }}>
+                  Admin XII TJ
                 </span>
-                <span className="text-[10px] text-[#f2eb87] tracking-wider uppercase font-semibold">Superuser</span>
+                <span className="text-[10px] tracking-wider uppercase font-semibold" style={{ color: 'var(--color-theme)' }}>
+                  ANGKATAN 27
+                </span>
               </div>
             </div>
           </div>
@@ -244,46 +269,51 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </div>
 
       {/* Mobile Bottom Navigation Bar (Exclusive for Admin Portal) */}
-      <nav className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-[#161512]/95 backdrop-blur-lg border-t border-[#f5f1ca]/15 px-3 py-2 flex items-center justify-around shadow-2xl">
+      <nav className="fixed bottom-0 left-0 right-0 z-40 md:hidden backdrop-blur-lg border-t px-3 py-2 flex items-center justify-around shadow-2xl transition-colors" style={{ backgroundColor: 'var(--bg-primary)', borderColor: 'var(--border-color)' }}>
         <Link
           href="/admin"
-          className={`flex flex-col items-center gap-1 py-1 px-2.5 rounded-xl transition-all ${
-            pathname === '/admin' ? 'text-[#f2eb87] font-bold scale-105' : 'text-[#9e9a8d] hover:text-[#f5f1ca]'
+          className={`flex flex-col items-center gap-1 py-1 px-2 rounded-xl transition-all ${
+            pathname === '/admin' ? 'font-bold scale-105' : 'hover:opacity-100'
           }`}
+          style={{ color: pathname === '/admin' ? 'var(--color-theme)' : 'var(--text-muted)' }}
         >
           <LayoutDashboard className="w-4 h-4" />
           <span className="text-[10px] tracking-tight">Ringkasan</span>
         </Link>
         <Link
           href="/admin/siswa"
-          className={`flex flex-col items-center gap-1 py-1 px-2.5 rounded-xl transition-all ${
-            pathname === '/admin/siswa' ? 'text-[#f2eb87] font-bold scale-105' : 'text-[#9e9a8d] hover:text-[#f5f1ca]'
+          className={`flex flex-col items-center gap-1 py-1 px-2 rounded-xl transition-all ${
+            pathname === '/admin/siswa' ? 'font-bold scale-105' : 'hover:opacity-100'
           }`}
+          style={{ color: pathname === '/admin/siswa' ? 'var(--color-theme)' : 'var(--text-muted)' }}
         >
           <Users className="w-4 h-4" />
           <span className="text-[10px] tracking-tight">Siswa</span>
         </Link>
         <Link
-          href="/admin/jadwal"
-          className={`flex flex-col items-center gap-1 py-1 px-2.5 rounded-xl transition-all ${
-            pathname === '/admin/jadwal' ? 'text-[#f2eb87] font-bold scale-105' : 'text-[#9e9a8d] hover:text-[#f5f1ca]'
+          href="/admin/projects"
+          className={`flex flex-col items-center gap-1 py-1 px-2 rounded-xl transition-all ${
+            pathname === '/admin/projects' ? 'font-bold scale-105' : 'hover:opacity-100'
           }`}
+          style={{ color: pathname === '/admin/projects' ? 'var(--color-theme)' : 'var(--text-muted)' }}
+        >
+          <FolderGit2 className="w-4 h-4" />
+          <span className="text-[10px] tracking-tight">Projects</span>
+        </Link>
+        <Link
+          href="/admin/jadwal"
+          className={`flex flex-col items-center gap-1 py-1 px-2 rounded-xl transition-all ${
+            pathname === '/admin/jadwal' ? 'font-bold scale-105' : 'hover:opacity-100'
+          }`}
+          style={{ color: pathname === '/admin/jadwal' ? 'var(--color-theme)' : 'var(--text-muted)' }}
         >
           <Clock className="w-4 h-4" />
           <span className="text-[10px] tracking-tight">Jadwal</span>
         </Link>
-        <Link
-          href="/admin/interaktif"
-          className={`flex flex-col items-center gap-1 py-1 px-2.5 rounded-xl transition-all ${
-            pathname === '/admin/interaktif' ? 'text-[#f2eb87] font-bold scale-105' : 'text-[#9e9a8d] hover:text-[#f5f1ca]'
-          }`}
-        >
-          <Sparkles className="w-4 h-4" />
-          <span className="text-[10px] tracking-tight">Interaksi</span>
-        </Link>
         <button
           onClick={() => setMobileSidebarOpen(true)}
-          className="flex flex-col items-center gap-1 py-1 px-2.5 rounded-xl text-[#9e9a8d] hover:text-[#f2eb87] transition-all"
+          className="flex flex-col items-center gap-1 py-1 px-2 rounded-xl transition-all"
+          style={{ color: 'var(--text-muted)' }}
         >
           <Menu className="w-4 h-4" />
           <span className="text-[10px] tracking-tight">Semua</span>
@@ -292,77 +322,84 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
       {/* Mobile Sidebar Drawer */}
       <AnimatePresence>
-      {mobileSidebarOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.18 }}
-          className="fixed inset-0 z-50 md:hidden flex"
-        >
+        {mobileSidebarOpen && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={() => setMobileSidebarOpen(false)}
-            className="fixed inset-0 bg-black/70 backdrop-blur-sm"
-          />
-          <motion.div
-            initial={{ x: '-100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '-100%' }}
-            transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-            className="relative w-64 max-w-[80vw] bg-[#141310] h-full z-10 flex flex-col border-r border-[#f5f1ca]/10"
+            transition={{ duration: 0.18 }}
+            className="fixed inset-0 z-50 md:hidden flex"
           >
-            <div className="h-16 px-5 border-b border-[#f5f1ca]/10 flex items-center justify-between">
-              <span className="font-serif-title font-bold text-sm text-[#f5f1ca]">Menu Portal Admin</span>
-              <button
-                onClick={() => setMobileSidebarOpen(false)}
-                className="p-1 rounded-lg text-[#9e9a8d] hover:text-[#f2eb87]"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
-              {ADMIN_NAV.map((item) => {
-                const Icon = item.icon;
-                const isActive = pathname === item.href;
-                return (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    onClick={() => setMobileSidebarOpen(false)}
-                    className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold ${
-                      isActive
-                        ? 'bg-[#f2eb87] text-[#161512] font-bold'
-                        : 'text-[#d8d6c6]/80 hover:bg-[#f5f1ca]/10 hover:text-[#f2eb87]'
-                    }`}
-                  >
-                    <Icon className="w-4 h-4" />
-                    <span>{item.name}</span>
-                  </Link>
-                );
-              })}
-            </div>
-            <div className="p-4 border-t border-[#f5f1ca]/10 space-y-2">
-              <Link
-                href="/"
-                className="flex items-center gap-2 px-3 py-2 text-xs text-[#d8d6c6]/80 hover:text-[#f2eb87]"
-              >
-                <ExternalLink className="w-3.5 h-3.5" />
-                <span>Lihat Website</span>
-              </Link>
-              <button
-                onClick={handleLogout}
-                className="flex items-center gap-2 w-full px-3 py-2 text-xs font-semibold text-red-400 hover:text-red-300"
-              >
-                <LogOut className="w-3.5 h-3.5" />
-                <span>Logout</span>
-              </button>
-            </div>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setMobileSidebarOpen(false)}
+              className="fixed inset-0 bg-black/70 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ x: '-100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '-100%' }}
+              transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+              className="relative w-64 max-w-[80vw] h-full z-10 flex flex-col border-r"
+              style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--border-color)' }}
+            >
+              <div className="h-16 px-5 border-b flex items-center justify-between" style={{ borderColor: 'var(--border-color)' }}>
+                <span className="font-theme-heading font-bold text-sm" style={{ color: 'var(--text-main)' }}>Menu Portal Admin</span>
+                <button
+                  onClick={() => setMobileSidebarOpen(false)}
+                  className="p-1 rounded-lg"
+                  style={{ color: 'var(--text-muted)' }}
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              <div className="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
+                {ADMIN_NAV.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = pathname === item.href;
+                  return (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      onClick={() => setMobileSidebarOpen(false)}
+                      className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+                        isActive
+                          ? 'font-bold shadow-sm'
+                          : 'hover:opacity-100'
+                      }`}
+                      style={{
+                        backgroundColor: isActive ? 'var(--color-theme)' : 'transparent',
+                        color: isActive ? '#050505' : 'var(--text-body)',
+                      }}
+                    >
+                      <Icon className="w-4 h-4" style={{ color: isActive ? '#050505' : 'var(--color-theme)' }} />
+                      <span>{item.name}</span>
+                    </Link>
+                  );
+                })}
+              </div>
+              <div className="p-4 border-t space-y-2" style={{ borderColor: 'var(--border-color)' }}>
+                <Link
+                  href="/"
+                  className="flex items-center gap-2 px-3 py-2 text-xs hover:opacity-100"
+                  style={{ color: 'var(--text-muted)' }}
+                >
+                  <ExternalLink className="w-3.5 h-3.5" style={{ color: 'var(--color-theme)' }} />
+                  <span>Lihat Website</span>
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-2 w-full px-3 py-2 text-xs font-semibold text-rose-400 hover:text-rose-300"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span>Logout</span>
+                </button>
+              </div>
+            </motion.div>
           </motion.div>
-        </motion.div>
-      )}
+        )}
       </AnimatePresence>
     </div>
   );

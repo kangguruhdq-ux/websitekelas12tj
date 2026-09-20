@@ -16,14 +16,17 @@ import {
   Settings,
   ShieldCheck,
   Cpu,
+  FolderGit2,
 } from 'lucide-react';
 
 export default function AdminDashboardPage() {
-  const { students, roles, announcements, events, gallery, settings } = useClassData();
+  const { students, roles, announcements, events, gallery, settings, projects } = useClassData();
 
   const totalStudents = students.length;
   const totalMale = students.filter((s) => s.gender === 'L').length;
   const totalFemale = students.filter((s) => s.gender === 'P').length;
+  const totalProjects = (projects || []).length;
+  const publishedProjects = (projects || []).filter((p) => p.is_published).length;
 
   const kpis = [
     {
@@ -32,6 +35,16 @@ export default function AdminDashboardPage() {
       sub: `${totalMale} Laki-laki • ${totalFemale} Perempuan`,
       icon: Users,
       href: '/admin/siswa',
+      accent: 'text-[#f2eb87]',
+      bg: 'bg-[#f2eb87]/10',
+      border: 'border-[#f2eb87]/20',
+    },
+    {
+      title: 'Project TKJ',
+      value: totalProjects,
+      sub: `${publishedProjects} Live • ${(projects || []).filter((p) => p.is_featured).length} Featured`,
+      icon: FolderGit2,
+      href: '/admin/projects',
       accent: 'text-[#f2eb87]',
       bg: 'bg-[#f2eb87]/10',
       border: 'border-[#f2eb87]/20',
@@ -76,16 +89,6 @@ export default function AdminDashboardPage() {
       bg: 'bg-[#f2eb87]/10',
       border: 'border-[#f2eb87]/20',
     },
-    {
-      title: 'Status Portal Web',
-      value: 'Aktif',
-      sub: `Tahun Ajaran ${settings.academic_year || '2026/2027'}`,
-      icon: Sparkles,
-      href: '/admin/settings',
-      accent: 'text-[#f5f1ca]',
-      bg: 'bg-[#f5f1ca]/10',
-      border: 'border-[#f5f1ca]/20',
-    },
   ];
 
   return (
@@ -103,7 +106,7 @@ export default function AdminDashboardPage() {
             <Sparkles className="w-3.5 h-3.5" />
             <span className="uppercase tracking-widest text-[10px]">PUSAT KENDALI KELAS</span>
             <span className="w-1.5 h-1.5 rounded-full bg-[#f2eb87]" />
-            <span className="text-[#d8d6c6]">XII TKJ</span>
+            <span className="text-[#d8d6c6]">ANGKATAN 27 • XII TJ</span>
           </div>
 
           <h1 className="text-2xl sm:text-4xl font-serif-title font-bold text-[#f5f1ca] tracking-tight">
@@ -111,7 +114,7 @@ export default function AdminDashboardPage() {
           </h1>
 
           <p className="text-xs sm:text-sm text-[#d8d6c6]/80 max-w-3xl leading-relaxed">
-            Kelola seluruh data anggota siswa, struktur fungsionaris, warta pengumuman, agenda program kerja, dokumentasi galeri, serta pengaturan identitas visual website resmi XII TKJ secara real-time.
+            Kelola seluruh data anggota siswa, katalog karya inovasi Project TKJ, struktur fungsionaris, warta pengumuman, agenda program kerja, dokumentasi galeri, serta pengaturan identitas visual website resmi XII TJ — Teknik Komputer dan Jaringan secara real-time.
           </p>
         </div>
       </motion.div>
@@ -401,7 +404,15 @@ export default function AdminDashboardPage() {
             <span className="text-[10px] uppercase tracking-wider font-semibold text-[#9e9a8d]">Pintasan</span>
           </div>
 
-          <div className="grid grid-cols-2 gap-3.5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3.5">
+            <a
+              href="/admin/projects"
+              className="p-4 rounded-xl bg-[#161512] border border-[#f5f1ca]/10 hover:border-[#f2eb87]/50 text-xs font-semibold text-[#f5f1ca] hover:text-[#f2eb87] flex items-center gap-3 transition-all group"
+            >
+              <FolderGit2 className="w-4 h-4 text-[#f2eb87] group-hover:scale-110 transition-transform" />
+              <span>Project TKJ</span>
+            </a>
+
             <a
               href="/admin/siswa"
               className="p-4 rounded-xl bg-[#161512] border border-[#f5f1ca]/10 hover:border-[#f2eb87]/50 text-xs font-semibold text-[#f5f1ca] hover:text-[#f2eb87] flex items-center gap-3 transition-all group"
@@ -432,6 +443,14 @@ export default function AdminDashboardPage() {
             >
               <ImageIcon className="w-4 h-4 text-[#f2eb87] group-hover:scale-110 transition-transform" />
               <span>Upload Galeri</span>
+            </a>
+
+            <a
+              href="/admin/settings"
+              className="p-4 rounded-xl bg-[#161512] border border-[#f5f1ca]/10 hover:border-[#f2eb87]/50 text-xs font-semibold text-[#f5f1ca] hover:text-[#f2eb87] flex items-center gap-3 transition-all group"
+            >
+              <Settings className="w-4 h-4 text-[#f2eb87] group-hover:scale-110 transition-transform" />
+              <span>Pengaturan Web</span>
             </a>
           </div>
         </motion.div>

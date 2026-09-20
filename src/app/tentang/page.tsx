@@ -100,14 +100,19 @@ export default function TentangPage() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-[#1f1d19] text-[#f2eb87] border border-[#f2eb87]/30 shadow-lg"
+            className="flex flex-wrap items-center justify-center gap-2"
           >
-            <Sparkles className="w-3.5 h-3.5" />
-            <span className="uppercase tracking-widest text-[10px]">
-              PROFIL RESMI KELAS & KABINET
-            </span>
-            <span className="w-1.5 h-1.5 rounded-full bg-[#f2eb87]" />
-            <span className="text-[#d8d6c6]">{settings.academic_year || '2026/2027'}</span>
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-[#1f1d19] text-[#f2eb87] border border-[#f2eb87]/30 shadow-lg">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span className="uppercase tracking-widest text-[10px]">
+                PROFIL RESMI KELAS & KABINET
+              </span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#f2eb87]" />
+              <span className="text-[#d8d6c6]">{settings.academic_year || '2026/2027'}</span>
+            </div>
+            <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#f2eb87]/15 text-[#f2eb87] border border-[#f2eb87]/40 tracking-wider">
+              ANGKATAN 27
+            </div>
           </motion.div>
 
           <div className="space-y-3">
@@ -128,7 +133,7 @@ export default function TentangPage() {
             >
               Mengenal Keluarga Besar <br />
               <span className="italic underline decoration-[#f2eb87]/40 underline-offset-8 text-[#f2eb87]">
-                {settings.class_name || 'XII TKJ'}
+                XII TJ — Teknik Komputer dan Jaringan
               </span>
             </motion.h1>
 

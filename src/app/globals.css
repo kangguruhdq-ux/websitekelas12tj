@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Ibarra+Real+Nova:ital,wght@0,400..700;1,400..700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Ibarra+Real+Nova:ital,wght@0,400..700;1,400..700&family=Orbitron:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -6,40 +6,113 @@
 @theme {
   --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-serif: 'Ibarra Real Nova', Georgia, serif;
+  --font-orbitron: 'Orbitron', sans-serif;
+  --font-space: 'Space Grotesk', sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
-:root {
-  /* BEM FEB UI Light Palette */
-  --bg-primary: #faf8f5;
-  --bg-secondary: #f4f0e8;
-  --bg-card: rgba(255, 255, 255, 0.92);
-  --border-color: rgba(22, 21, 18, 0.12);
-  --border-gold: rgba(180, 140, 20, 0.3);
-  --text-main: #161512;
-  --text-body: #3c3a34;
-  --text-muted: #737066;
-  --color-gold: #c59b27;
-  --color-gold-hover: #b0881d;
-  --color-champagne: #161512;
-  --color-surface: #ffffff;
-}
+/* ==========================================================================
+   GLOBAL 3-THEME SYSTEM VARIABLES
+   ========================================================================== */
 
-.dark {
-  /* Official BEM FEB UI Dark Tokens (DESIGN.md) */
+/* 1. GOLD LUXE (DEFAULT) */
+:root,
+.theme-gold,
+[data-theme="gold"] {
   --bg-primary: #161512;
   --bg-secondary: #1c1a16;
   --bg-card: #1f1d19;
+  --bg-card-hover: #26231e;
   --border-color: rgba(245, 241, 202, 0.12);
-  --border-gold: rgba(242, 235, 135, 0.3);
+  --border-theme: rgba(242, 235, 135, 0.3);
+  --border-theme-hover: rgba(242, 235, 135, 0.6);
   --text-main: #f5f1ca;
   --text-body: #d8d6c6;
   --text-muted: #9e9a8d;
-  --color-gold: #f2eb87;
-  --color-gold-hover: #e6df73;
-  --color-champagne: #f5f1ca;
-  --color-surface: #1f1d19;
+  --color-theme: #f2eb87;
+  --color-theme-hover: #e6df73;
+  --color-theme-muted: rgba(242, 235, 135, 0.12);
+  --color-theme-rgb: 242, 235, 135;
+  --theme-font-heading: 'Ibarra Real Nova', Georgia, serif;
+  --theme-font-tech: 'Plus Jakarta Sans', sans-serif;
+  --theme-glow: rgba(242, 235, 135, 0.25);
+  --theme-glow-intense: rgba(242, 235, 135, 0.5);
+
+  /* Legacy fallbacks */
+  --border-gold: var(--border-theme);
+  --color-gold: var(--color-theme);
+  --color-gold-hover: var(--color-theme-hover);
+  --color-champagne: var(--text-main);
+  --color-surface: var(--bg-card);
 }
+
+/* 2. NEON BLACK (PURE CYBER DEEP BLACK & ELECTRIC NEON - ZERO BROWN!) */
+.theme-neon-black,
+.theme-neon,
+[data-theme="neon-black"],
+[data-theme="neon"] {
+  --bg-primary: #030305;
+  --bg-secondary: #08080d;
+  --bg-card: #0d0f16;
+  --bg-card-hover: #141724;
+  --border-color: rgba(0, 240, 255, 0.14);
+  --border-theme: rgba(0, 240, 255, 0.45);
+  --border-theme-hover: rgba(0, 240, 255, 0.85);
+  --text-main: #f8fafc;
+  --text-body: #cbd5e1;
+  --text-muted: #64748b;
+  --color-theme: #00f0ff;
+  --color-theme-hover: #38bdf8;
+  --color-theme-muted: rgba(0, 240, 255, 0.14);
+  --color-theme-rgb: 0, 240, 255;
+  --theme-font-heading: 'Orbitron', 'Space Grotesk', system-ui, sans-serif;
+  --theme-font-tech: 'Space Grotesk', ui-monospace, monospace;
+  --theme-glow: rgba(0, 240, 255, 0.35);
+  --theme-glow-intense: rgba(0, 240, 255, 0.65);
+
+  /* Legacy fallbacks mapped to pure cyber neon */
+  --border-gold: var(--border-theme);
+  --color-gold: var(--color-theme);
+  --color-gold-hover: var(--color-theme-hover);
+  --color-champagne: var(--text-main);
+  --color-surface: var(--bg-card);
+}
+
+/* 3. ELEGANT GREEN (DEEP EMERALD FOREST & MINT ACCENTS) */
+.theme-elegant-green,
+.theme-green,
+[data-theme="elegant-green"],
+[data-theme="green"] {
+  --bg-primary: #04120b;
+  --bg-secondary: #081a11;
+  --bg-card: #0c2419;
+  --bg-card-hover: #113323;
+  --border-color: rgba(52, 211, 153, 0.16);
+  --border-theme: rgba(52, 211, 153, 0.45);
+  --border-theme-hover: rgba(52, 211, 153, 0.85);
+  --text-main: #f0fdf4;
+  --text-body: #bbf7d0;
+  --text-muted: #6ee7b7;
+  --color-theme: #10b981;
+  --color-theme-hover: #34d399;
+  --color-theme-muted: rgba(16, 185, 129, 0.14);
+  --color-theme-rgb: 16, 185, 129;
+  --theme-font-heading: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --theme-font-tech: 'Plus Jakarta Sans', ui-monospace, monospace;
+  --theme-glow: rgba(16, 185, 129, 0.35);
+  --theme-glow-intense: rgba(16, 185, 129, 0.65);
+
+  /* Legacy fallbacks mapped to emerald */
+  --border-gold: var(--border-theme);
+  --color-gold: var(--color-theme);
+  --color-gold-hover: var(--color-theme-hover);
+  --color-champagne: var(--text-main);
+  --color-surface: var(--bg-card);
+}
+
+/* ==========================================================================
+   GLOBAL TRANSITIONS & BODY
+   ========================================================================== */
 
 body {
   background-color: var(--bg-primary);
@@ -47,29 +120,41 @@ body {
   font-family: var(--font-sans);
   min-height: 100vh;
   overflow-x: hidden;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color 300ms ease, color 300ms ease, border-color 300ms ease;
 }
 
-/* Editorial Typography */
+/* Smooth theme transition across all components */
+body *,
+body *::before,
+body *::after {
+  transition-property: background-color, border-color, color, box-shadow;
+  transition-duration: 250ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Dynamic Heading Typography depending on active theme */
+.font-theme-heading,
 .font-serif-title {
-  font-family: 'Ibarra Real Nova', Georgia, serif;
+  font-family: var(--theme-font-heading);
 }
 
-/* Subtle Organic Texture */
+.theme-neon-black h1,
+.theme-neon-black h2,
+.theme-neon h1,
+.theme-neon h2 {
+  font-family: 'Orbitron', 'Space Grotesk', sans-serif;
+  letter-spacing: 0.03em;
+}
+
+/* Subtle Dynamic Grid Background */
 .bem-grid {
   background-size: 40px 40px;
   background-image: 
-    linear-gradient(to right, rgba(245, 241, 202, 0.03) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(245, 241, 202, 0.03) 1px, transparent 1px);
+    linear-gradient(to right, rgba(var(--color-theme-rgb), 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(var(--color-theme-rgb), 0.04) 1px, transparent 1px);
 }
 
-.dark .bem-grid {
-  background-image: 
-    linear-gradient(to right, rgba(245, 241, 202, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(245, 241, 202, 0.04) 1px, transparent 1px);
-}
-
-/* BEM FEB UI Card Structure */
+/* Theme Adaptive Card */
 .bem-card {
   background-color: var(--bg-card);
   border: 1px solid var(--border-color);
@@ -78,15 +163,15 @@ body {
 }
 
 .bem-card:hover {
-  border-color: var(--border-gold);
-  box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.5), 0 0 15px -3px rgba(242, 235, 135, 0.1);
+  border-color: var(--border-theme);
+  box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.7), 0 0 20px -3px var(--theme-glow);
 }
 
-/* BEM FEB UI Badge */
+/* Theme Adaptive Badge */
 .bem-badge {
-  background-color: rgba(242, 235, 135, 0.1);
-  color: var(--color-gold);
-  border: 1px solid var(--border-gold);
+  background-color: var(--color-theme-muted);
+  color: var(--color-theme);
+  border: 1px solid var(--border-theme);
   border-radius: 9999px;
   padding: 0.25rem 0.75rem;
   font-size: 0.75rem;
@@ -95,32 +180,32 @@ body {
   text-transform: uppercase;
 }
 
-/* BEM FEB UI Gold Button */
+/* Theme Primary Button */
 .btn-bem-primary {
-  background-color: var(--color-gold);
-  color: #111111;
+  background-color: var(--color-theme);
+  color: #050505;
   font-weight: 700;
   border-radius: 0.75rem;
   padding: 0.75rem 1.5rem;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 14px -2px rgba(242, 235, 135, 0.35);
+  box-shadow: 0 4px 14px -2px var(--theme-glow);
 }
 
 .btn-bem-primary:hover {
-  background-color: var(--color-gold-hover);
+  background-color: var(--color-theme-hover);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px -2px rgba(242, 235, 135, 0.45);
+  box-shadow: 0 6px 22px -2px var(--theme-glow-intense);
 }
 
 .btn-bem-primary:active {
   transform: translateY(0);
 }
 
-/* Secondary Button (Outline) */
+/* Theme Secondary Button (Outline) */
 .btn-bem-outline {
   background-color: transparent;
   color: var(--text-main);
-  border: 1px solid var(--border-gold);
+  border: 1px solid var(--border-theme);
   border-radius: 0.75rem;
   padding: 0.75rem 1.5rem;
   font-weight: 600;
@@ -128,8 +213,8 @@ body {
 }
 
 .btn-bem-outline:hover {
-  background-color: rgba(245, 241, 202, 0.08);
-  border-color: var(--color-gold);
+  background-color: var(--color-theme-muted);
+  border-color: var(--color-theme);
   transform: translateY(-2px);
 }
 
@@ -146,7 +231,7 @@ body {
   scrollbar-width: none;
 }
 
-/* Custom sleek scrollbar */
+/* Sleek Theme Adaptive Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -155,11 +240,11 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(245, 241, 202, 0.2);
+  background: rgba(var(--color-theme-rgb), 0.2);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(242, 235, 135, 0.4);
+  background: rgba(var(--color-theme-rgb), 0.45);
 }
 
 /* Mobile smooth touch & performance optimizations */
@@ -174,14 +259,13 @@ html {
     -webkit-overflow-scrolling: touch;
   }
 
-  /* Keep touch interactions responsive on lower-powered phones. */
   *, *::before, *::after {
     -webkit-tap-highlight-color: transparent;
   }
 
   .backdrop-blur-md,
   .backdrop-blur-xl {
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(12px);
   }
 }
 

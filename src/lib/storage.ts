@@ -80,6 +80,8 @@ export function selfHealCMSData(raw: Partial<CMSData> | null | undefined): CMSDa
     })),
   }));
 
+  const projects = Array.isArray(raw.projects) ? raw.projects : (INITIAL_CMS_DATA.projects || []);
+
   const settings = {
     ...INITIAL_CMS_DATA.settings,
     ...(raw.settings || {}),
@@ -94,6 +96,7 @@ export function selfHealCMSData(raw: Partial<CMSData> | null | undefined): CMSDa
     events,
     gallery,
     settings,
+    projects,
     time_capsules,
     memory_notes,
     superlatives,

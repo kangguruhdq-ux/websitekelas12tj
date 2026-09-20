@@ -58,9 +58,9 @@ export default function Footer() {
   }
 
   return (
-    <footer className="relative border-t border-[#f5f1ca]/15 bg-[#12110e] text-[#d8d6c6] overflow-hidden">
-      {/* Top subtle gold ambient glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 max-w-4xl h-[1px] bg-gradient-to-r from-transparent via-[#f2eb87]/40 to-transparent" />
+    <footer className="relative border-t overflow-hidden transition-colors" style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--border-color)', color: 'var(--text-body)' }}>
+      {/* Top subtle theme ambient glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 max-w-4xl h-[1px]" style={{ background: 'linear-gradient(to right, transparent, var(--color-theme), transparent)' }} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-14">
@@ -72,36 +72,42 @@ export default function Footer() {
                 <img
                   src={settings.logo_url}
                   alt={settings.class_name}
-                  className="w-10 h-10 rounded-xl object-cover border border-[#f5f1ca]/20"
+                  className="w-10 h-10 rounded-xl object-cover border"
+                  style={{ borderColor: 'var(--border-color)' }}
                 />
               ) : (
-                <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-[#f2eb87]/10 border border-[#f2eb87]/30 text-[#f2eb87] font-serif-title font-bold text-lg">
-                  TKJ
+                <div className="flex items-center justify-center w-10 h-10 rounded-xl border font-theme-heading font-bold text-lg" style={{ backgroundColor: 'var(--color-theme-muted)', borderColor: 'var(--border-theme)', color: 'var(--color-theme)' }}>
+                  TJ
                 </div>
               )}
               <div className="flex flex-col">
-                <span className="text-xl font-serif-title font-bold tracking-tight text-[#f5f1ca]">
-                  {settings.class_name || 'XII TKJ'}
-                </span>
-                <span className="text-xs text-[#9e9a8d] tracking-wide uppercase font-medium">
+                <div className="flex items-center gap-2">
+                  <span className="text-xl font-theme-heading font-bold tracking-tight" style={{ color: 'var(--text-main)' }}>
+                    {settings.class_name?.includes('TJ') ? settings.class_name : 'XII TJ'}
+                  </span>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full border" style={{ backgroundColor: 'var(--color-theme-muted)', color: 'var(--color-theme)', borderColor: 'var(--border-theme)' }}>
+                    ANGKATAN 27
+                  </span>
+                </div>
+                <span className="text-xs tracking-wide uppercase font-medium" style={{ color: 'var(--text-muted)' }}>
                   {settings.class_subtitle || 'Teknik Komputer dan Jaringan'}
                 </span>
               </div>
             </div>
 
-            <p className="text-sm text-[#d8d6c6]/80 leading-relaxed font-normal">
+            <p className="text-sm leading-relaxed font-normal" style={{ color: 'var(--text-body)' }}>
               {settings.description ||
                 'Tempat kami belajar, berkembang, berkarya, dan membangun cerita bersama. Melangkah dengan integritas, kebersamaan, dan keunggulan teknologi.'}
             </p>
 
             {/* Homeroom & Academic Year Badge */}
             <div className="flex flex-wrap items-center gap-2 pt-1">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#1f1d19] border border-[#f5f1ca]/15 text-xs text-[#f5f1ca]">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#f2eb87]" />
-                <span>Wali Kelas: <strong className="text-[#f2eb87] font-semibold">{settings.homeroom_teacher || 'Bu Febriyana, S.T.'}</strong></span>
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)', color: 'var(--text-main)' }}>
+                <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: 'var(--color-theme)' }} />
+                <span>Wali Kelas: <strong className="font-semibold" style={{ color: 'var(--color-theme)' }}>{settings.homeroom_teacher || 'Bu Febriyana, S.T.'}</strong></span>
               </div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#1f1d19] border border-[#f5f1ca]/15 text-xs text-[#9e9a8d]">
-                <Sparkles className="w-3 h-3 text-[#f2eb87]" />
+              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)', color: 'var(--text-muted)' }}>
+                <Sparkles className="w-3 h-3" style={{ color: 'var(--color-theme)' }} />
                 <span>{settings.academic_year || '2026/2027'}</span>
               </div>
             </div>
@@ -109,22 +115,27 @@ export default function Footer() {
 
           {/* Col 2: Navigation (Span 3) */}
           <div className="md:col-span-3 space-y-4">
-            <h4 className="text-xs font-bold uppercase tracking-widest text-[#f5f1ca] border-b border-[#f5f1ca]/10 pb-2">
+            <h4 className="text-xs font-bold uppercase tracking-widest border-b pb-2" style={{ color: 'var(--text-main)', borderColor: 'var(--border-color)' }}>
               Navigasi Halaman
             </h4>
-            <ul className="space-y-2.5 text-sm text-[#d8d6c6]/75">
+            <ul className="space-y-2.5 text-sm" style={{ color: 'var(--text-body)' }}>
               <li>
-                <Link href="/" className="hover:text-[#f2eb87] transition-colors flex items-center gap-1.5">
-                  <span>Beranda</span>
+                <Link href="/" className="transition-colors hover:underline" style={{ color: 'var(--text-main)' }}>
+                  <span>Beranda Utama</span>
                 </Link>
               </li>
               <li>
-                <Link href="/tentang" className="hover:text-[#f2eb87] transition-colors">
-                  Tentang & Filosofi Kabinet
+                <Link href="/projects" className="font-semibold transition-colors flex items-center gap-1.5" style={{ color: 'var(--color-theme)' }}>
+                  <span>★ Project TKJ (Showcase)</span>
                 </Link>
               </li>
               <li>
-                <Link href="/siswa" className="hover:text-[#f2eb87] transition-colors">
+                <Link href="/tentang" className="hover:opacity-80 transition-colors">
+                  Tentang & Filosofi Kelas
+                </Link>
+              </li>
+              <li>
+                <Link href="/siswa" className="hover:opacity-80 transition-colors">
                   Direktori Siswa (34 Anggota)
                 </Link>
               </li>
