@@ -51,15 +51,15 @@
 .theme-neon,
 [data-theme="neon-black"],
 [data-theme="neon"] {
-  --bg-primary: #030305;
-  --bg-secondary: #08080d;
-  --bg-card: #0d0f16;
-  --bg-card-hover: #141724;
-  --border-color: rgba(0, 240, 255, 0.14);
-  --border-theme: rgba(0, 240, 255, 0.45);
-  --border-theme-hover: rgba(0, 240, 255, 0.85);
-  --text-main: #f8fafc;
-  --text-body: #cbd5e1;
+  --bg-primary: #020204;
+  --bg-secondary: #06080e;
+  --bg-card: #090c14;
+  --bg-card-hover: #101524;
+  --border-color: rgba(0, 240, 255, 0.16);
+  --border-theme: rgba(0, 240, 255, 0.5);
+  --border-theme-hover: rgba(0, 240, 255, 0.9);
+  --text-main: #e0f7ff;
+  --text-body: #94a3b8;
   --text-muted: #64748b;
   --color-theme: #00f0ff;
   --color-theme-hover: #38bdf8;
@@ -67,8 +67,8 @@
   --color-theme-rgb: 0, 240, 255;
   --theme-font-heading: 'Orbitron', 'Space Grotesk', system-ui, sans-serif;
   --theme-font-tech: 'Space Grotesk', ui-monospace, monospace;
-  --theme-glow: rgba(0, 240, 255, 0.35);
-  --theme-glow-intense: rgba(0, 240, 255, 0.65);
+  --theme-glow: rgba(0, 240, 255, 0.45);
+  --theme-glow-intense: rgba(0, 240, 255, 0.75);
 
   /* Legacy fallbacks mapped to pure cyber neon */
   --border-gold: var(--border-theme);
@@ -83,24 +83,24 @@
 .theme-green,
 [data-theme="elegant-green"],
 [data-theme="green"] {
-  --bg-primary: #04120b;
-  --bg-secondary: #081a11;
-  --bg-card: #0c2419;
-  --bg-card-hover: #113323;
-  --border-color: rgba(52, 211, 153, 0.16);
-  --border-theme: rgba(52, 211, 153, 0.45);
-  --border-theme-hover: rgba(52, 211, 153, 0.85);
-  --text-main: #f0fdf4;
-  --text-body: #bbf7d0;
+  --bg-primary: #030d07;
+  --bg-secondary: #05140b;
+  --bg-card: #071c11;
+  --bg-card-hover: #0c2b1a;
+  --border-color: rgba(16, 185, 129, 0.18);
+  --border-theme: rgba(52, 211, 153, 0.5);
+  --border-theme-hover: rgba(52, 211, 153, 0.9);
+  --text-main: #ecfdf5;
+  --text-body: #a7f3d0;
   --text-muted: #6ee7b7;
   --color-theme: #10b981;
   --color-theme-hover: #34d399;
-  --color-theme-muted: rgba(16, 185, 129, 0.14);
+  --color-theme-muted: rgba(16, 185, 129, 0.15);
   --color-theme-rgb: 16, 185, 129;
   --theme-font-heading: 'Plus Jakarta Sans', system-ui, sans-serif;
   --theme-font-tech: 'Plus Jakarta Sans', ui-monospace, monospace;
-  --theme-glow: rgba(16, 185, 129, 0.35);
-  --theme-glow-intense: rgba(16, 185, 129, 0.65);
+  --theme-glow: rgba(16, 185, 129, 0.4);
+  --theme-glow-intense: rgba(16, 185, 129, 0.7);
 
   /* Legacy fallbacks mapped to emerald */
   --border-gold: var(--border-theme);
@@ -280,4 +280,300 @@ html {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* ==========================================================================
+   UNIVERSAL THEME OVERRIDE ENGINE
+   Dynamically transforms ALL components, cards, text, and borders to the
+   selected theme across every page (Website & Admin)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. NEON BLACK MODE (Cyber Obsidian + Electric Cyan Glow)
+   -------------------------------------------------------------------------- */
+
+/* Body Background */
+html.theme-neon-black body,
+html.theme-neon body,
+html[data-theme="neon-black"] body,
+html[data-theme="neon"] body {
+  background-color: #020204 !important;
+  color: #94a3b8 !important;
+}
+
+/* Headings & Cyber Glow Typography */
+html.theme-neon-black h1,
+html.theme-neon-black h2,
+html.theme-neon-black h3,
+html.theme-neon-black h4,
+html.theme-neon-black .font-serif-title,
+html.theme-neon-black .font-theme-heading,
+html[data-theme="neon-black"] h1,
+html[data-theme="neon-black"] h2,
+html[data-theme="neon-black"] h3,
+html[data-theme="neon-black"] h4,
+html[data-theme="neon-black"] .font-serif-title,
+html[data-theme="neon-black"] .font-theme-heading {
+  font-family: 'Orbitron', 'Space Grotesk', system-ui, sans-serif !important;
+  color: #e0f7ff !important;
+  text-shadow: 0 0 12px rgba(0, 240, 255, 0.45), 0 0 24px rgba(0, 240, 255, 0.2) !important;
+  letter-spacing: 0.03em !important;
+}
+
+/* Background Overrides */
+html.theme-neon-black [class*="bg-[#161512]"],
+html[data-theme="neon-black"] [class*="bg-[#161512]"] {
+  background-color: #020205 !important;
+}
+
+html.theme-neon-black [class*="bg-[#1f1d19]"],
+html[data-theme="neon-black"] [class*="bg-[#1f1d19]"] {
+  background-color: #090c14 !important;
+}
+
+html.theme-neon-black [class*="bg-[#1c1a16]"],
+html.theme-neon-black [class*="bg-[#282622]"],
+html.theme-neon-black [class*="bg-[#26231e]"],
+html[data-theme="neon-black"] [class*="bg-[#1c1a16]"],
+html[data-theme="neon-black"] [class*="bg-[#282622]"],
+html[data-theme="neon-black"] [class*="bg-[#26231e]"] {
+  background-color: #101524 !important;
+}
+
+html.theme-neon-black [class*="hover:bg-[#282622]"]:hover,
+html[data-theme="neon-black"] [class*="hover:bg-[#282622]"]:hover {
+  background-color: #161e33 !important;
+}
+
+html.theme-neon-black [class*="bg-[#f2eb87]"],
+html[data-theme="neon-black"] [class*="bg-[#f2eb87]"] {
+  background-color: #00f0ff !important;
+  color: #020617 !important;
+}
+
+html.theme-neon-black [class*="bg-[#f2eb87]/"],
+html[data-theme="neon-black"] [class*="bg-[#f2eb87]/"] {
+  background-color: rgba(0, 240, 255, 0.14) !important;
+}
+
+html.theme-neon-black [class*="hover:bg-[#e6df73]"]:hover,
+html[data-theme="neon-black"] [class*="hover:bg-[#e6df73]"]:hover {
+  background-color: #38bdf8 !important;
+  color: #020617 !important;
+}
+
+/* Text Overrides */
+html.theme-neon-black [class*="text-[#f5f1ca]"],
+html[data-theme="neon-black"] [class*="text-[#f5f1ca]"] {
+  color: #e0f7ff !important;
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.4) !important;
+}
+
+html.theme-neon-black [class*="text-[#f2eb87]"],
+html[data-theme="neon-black"] [class*="text-[#f2eb87]"] {
+  color: #00f0ff !important;
+  text-shadow: 0 0 8px rgba(0, 240, 255, 0.65) !important;
+}
+
+html.theme-neon-black [class*="hover:text-[#f2eb87]"]:hover,
+html.theme-neon-black [class*="group-hover:text-[#f2eb87]"],
+html[data-theme="neon-black"] [class*="hover:text-[#f2eb87]"]:hover,
+html[data-theme="neon-black"] [class*="group-hover:text-[#f2eb87]"] {
+  color: #38bdf8 !important;
+  text-shadow: 0 0 12px rgba(0, 240, 255, 0.8) !important;
+}
+
+html.theme-neon-black [class*="text-[#d8d6c6]"],
+html[data-theme="neon-black"] [class*="text-[#d8d6c6]"] {
+  color: #94a3b8 !important;
+}
+
+html.theme-neon-black [class*="text-[#9e9a8d]"],
+html[data-theme="neon-black"] [class*="text-[#9e9a8d]"] {
+  color: #64748b !important;
+}
+
+html.theme-neon-black [class*="text-[#161512]"],
+html[data-theme="neon-black"] [class*="text-[#161512]"] {
+  color: #020617 !important;
+}
+
+/* Border Overrides */
+html.theme-neon-black [class*="border-[#f5f1ca]"],
+html[data-theme="neon-black"] [class*="border-[#f5f1ca]"] {
+  border-color: rgba(0, 240, 255, 0.16) !important;
+}
+
+html.theme-neon-black [class*="border-[#f2eb87]"],
+html[data-theme="neon-black"] [class*="border-[#f2eb87]"] {
+  border-color: rgba(0, 240, 255, 0.45) !important;
+}
+
+html.theme-neon-black [class*="hover:border-[#f2eb87]"]:hover,
+html[data-theme="neon-black"] [class*="hover:border-[#f2eb87]"]:hover {
+  border-color: rgba(0, 240, 255, 0.85) !important;
+  box-shadow: 0 0 15px -2px rgba(0, 240, 255, 0.4) !important;
+}
+
+/* Shadow & Glow Overrides */
+html.theme-neon-black [class*="shadow-[#f2eb87]"],
+html[data-theme="neon-black"] [class*="shadow-[#f2eb87]"] {
+  box-shadow: 0 8px 30px -4px rgba(0, 240, 255, 0.45) !important;
+}
+
+/* SVG Chart Overrides */
+html.theme-neon-black polyline[stroke="#f2eb87"],
+html[data-theme="neon-black"] polyline[stroke="#f2eb87"] {
+  stroke: #00f0ff !important;
+}
+
+html.theme-neon-black stop[stop-color="#f2eb87"],
+html[data-theme="neon-black"] stop[stop-color="#f2eb87"] {
+  stop-color: #00f0ff !important;
+}
+
+
+/* --------------------------------------------------------------------------
+   2. ELEGANT GREEN MODE (Deep Emerald Abyss + Jade Glow)
+   -------------------------------------------------------------------------- */
+
+/* Body Background */
+html.theme-elegant-green body,
+html.theme-green body,
+html[data-theme="elegant-green"] body,
+html[data-theme="green"] body {
+  background-color: #030d07 !important;
+  color: #a7f3d0 !important;
+}
+
+/* Headings & Jade Glow Typography */
+html.theme-elegant-green h1,
+html.theme-elegant-green h2,
+html.theme-elegant-green h3,
+html.theme-elegant-green h4,
+html.theme-elegant-green .font-serif-title,
+html.theme-elegant-green .font-theme-heading,
+html[data-theme="elegant-green"] h1,
+html[data-theme="elegant-green"] h2,
+html[data-theme="elegant-green"] h3,
+html[data-theme="elegant-green"] h4,
+html[data-theme="elegant-green"] .font-serif-title,
+html[data-theme="elegant-green"] .font-theme-heading {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif !important;
+  font-weight: 800 !important;
+  color: #ecfdf5 !important;
+  text-shadow: 0 0 12px rgba(16, 185, 129, 0.35) !important;
+  letter-spacing: -0.01em !important;
+}
+
+/* Background Overrides */
+html.theme-elegant-green [class*="bg-[#161512]"],
+html[data-theme="elegant-green"] [class*="bg-[#161512]"] {
+  background-color: #030d07 !important;
+}
+
+html.theme-elegant-green [class*="bg-[#1f1d19]"],
+html[data-theme="elegant-green"] [class*="bg-[#1f1d19]"] {
+  background-color: #071c11 !important;
+}
+
+html.theme-elegant-green [class*="bg-[#1c1a16]"],
+html.theme-elegant-green [class*="bg-[#282622]"],
+html.theme-elegant-green [class*="bg-[#26231e]"],
+html[data-theme="elegant-green"] [class*="bg-[#1c1a16]"],
+html[data-theme="elegant-green"] [class*="bg-[#282622]"],
+html[data-theme="elegant-green"] [class*="bg-[#26231e]"] {
+  background-color: #0c2b1a !important;
+}
+
+html.theme-elegant-green [class*="hover:bg-[#282622]"]:hover,
+html[data-theme="elegant-green"] [class*="hover:bg-[#282622]"]:hover {
+  background-color: #123823 !important;
+}
+
+html.theme-elegant-green [class*="bg-[#f2eb87]"],
+html[data-theme="elegant-green"] [class*="bg-[#f2eb87]"] {
+  background-color: #10b981 !important;
+  color: #021208 !important;
+}
+
+html.theme-elegant-green [class*="bg-[#f2eb87]/"],
+html[data-theme="elegant-green"] [class*="bg-[#f2eb87]/"] {
+  background-color: rgba(16, 185, 129, 0.15) !important;
+}
+
+html.theme-elegant-green [class*="hover:bg-[#e6df73]"]:hover,
+html[data-theme="elegant-green"] [class*="hover:bg-[#e6df73]"]:hover {
+  background-color: #34d399 !important;
+  color: #021208 !important;
+}
+
+/* Text Overrides */
+html.theme-elegant-green [class*="text-[#f5f1ca]"],
+html[data-theme="elegant-green"] [class*="text-[#f5f1ca]"] {
+  color: #ecfdf5 !important;
+  text-shadow: 0 0 10px rgba(16, 185, 129, 0.35) !important;
+}
+
+html.theme-elegant-green [class*="text-[#f2eb87]"],
+html[data-theme="elegant-green"] [class*="text-[#f2eb87]"] {
+  color: #34d399 !important;
+  text-shadow: 0 0 8px rgba(52, 211, 153, 0.5) !important;
+}
+
+html.theme-elegant-green [class*="hover:text-[#f2eb87]"]:hover,
+html.theme-elegant-green [class*="group-hover:text-[#f2eb87]"],
+html[data-theme="elegant-green"] [class*="hover:text-[#f2eb87]"]:hover,
+html[data-theme="elegant-green"] [class*="group-hover:text-[#f2eb87]"] {
+  color: #6ee7b7 !important;
+  text-shadow: 0 0 10px rgba(52, 211, 153, 0.7) !important;
+}
+
+html.theme-elegant-green [class*="text-[#d8d6c6]"],
+html[data-theme="elegant-green"] [class*="text-[#d8d6c6]"] {
+  color: #a7f3d0 !important;
+}
+
+html.theme-elegant-green [class*="text-[#9e9a8d]"],
+html[data-theme="elegant-green"] [class*="text-[#9e9a8d]"] {
+  color: #6ee7b7 !important;
+}
+
+html.theme-elegant-green [class*="text-[#161512]"],
+html[data-theme="elegant-green"] [class*="text-[#161512]"] {
+  color: #021208 !important;
+}
+
+/* Border Overrides */
+html.theme-elegant-green [class*="border-[#f5f1ca]"],
+html[data-theme="elegant-green"] [class*="border-[#f5f1ca]"] {
+  border-color: rgba(16, 185, 129, 0.18) !important;
+}
+
+html.theme-elegant-green [class*="border-[#f2eb87]"],
+html[data-theme="elegant-green"] [class*="border-[#f2eb87]"] {
+  border-color: rgba(52, 211, 153, 0.45) !important;
+}
+
+html.theme-elegant-green [class*="hover:border-[#f2eb87]"]:hover,
+html[data-theme="elegant-green"] [class*="hover:border-[#f2eb87]"]:hover {
+  border-color: rgba(52, 211, 153, 0.8) !important;
+  box-shadow: 0 0 15px -2px rgba(16, 185, 129, 0.35) !important;
+}
+
+/* Shadow & Glow Overrides */
+html.theme-elegant-green [class*="shadow-[#f2eb87]"],
+html[data-theme="elegant-green"] [class*="shadow-[#f2eb87]"] {
+  box-shadow: 0 8px 30px -4px rgba(16, 185, 129, 0.35) !important;
+}
+
+/* SVG Chart Overrides */
+html.theme-elegant-green polyline[stroke="#f2eb87"],
+html[data-theme="elegant-green"] polyline[stroke="#f2eb87"] {
+  stroke: #10b981 !important;
+}
+
+html.theme-elegant-green stop[stop-color="#f2eb87"],
+html[data-theme="elegant-green"] stop[stop-color="#f2eb87"] {
+  stop-color: #10b981 !important;
 }

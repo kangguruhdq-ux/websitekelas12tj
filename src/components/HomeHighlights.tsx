@@ -22,7 +22,7 @@ export default function HomeHighlights() {
   const recentGallery = gallery.slice(0, 4);
 
   return (
-    <div className="space-y-24 py-16 bg-[#161512]">
+    <div className="space-y-24 py-16 transition-colors duration-300" style={{ backgroundColor: 'var(--bg-primary)' }}>
       {/* 1. Announcements & Agenda Grid (BEM FEB UI Student Info & Programs Style) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">

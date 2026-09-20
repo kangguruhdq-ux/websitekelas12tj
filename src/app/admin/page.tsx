@@ -203,15 +203,15 @@ export default function AdminDashboardPage() {
               <svg className="w-full h-full overflow-visible" viewBox="0 0 700 200" preserveAspectRatio="none">
                 <defs>
                   <linearGradient id="goldGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#f2eb87" stopOpacity="0.35" />
-                    <stop offset="100%" stopColor="#f2eb87" stopOpacity="0.0" />
+                    <stop offset="0%" stopColor="var(--color-theme)" stopOpacity="0.35" />
+                    <stop offset="100%" stopColor="var(--color-theme)" stopOpacity="0.0" />
                   </linearGradient>
                 </defs>
                 
                 {/* Horizontal Guide Lines */}
-                <line x1="0" y1="40" x2="700" y2="40" stroke="#f5f1ca" strokeOpacity="0.08" strokeDasharray="4 4" />
-                <line x1="0" y1="100" x2="700" y2="100" stroke="#f5f1ca" strokeOpacity="0.08" strokeDasharray="4 4" />
-                <line x1="0" y1="160" x2="700" y2="160" stroke="#f5f1ca" strokeOpacity="0.08" strokeDasharray="4 4" />
+                <line x1="0" y1="40" x2="700" y2="40" stroke="var(--border-color)" strokeOpacity="0.5" strokeDasharray="4 4" />
+                <line x1="0" y1="100" x2="700" y2="100" stroke="var(--border-color)" strokeOpacity="0.5" strokeDasharray="4 4" />
+                <line x1="0" y1="160" x2="700" y2="160" stroke="var(--border-color)" strokeOpacity="0.5" strokeDasharray="4 4" />
 
                 {/* Area Fill */}
                 <polygon
@@ -223,7 +223,7 @@ export default function AdminDashboardPage() {
                 <polyline
                   points="0,170 100,120 200,140 300,80 400,95 500,45 600,60 700,25"
                   fill="none"
-                  stroke="#f2eb87"
+                  stroke="var(--color-theme)"
                   strokeWidth="3.5"
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -241,8 +241,8 @@ export default function AdminDashboardPage() {
                   { x: 700, y: 25, label: 'Hari Ini', val: '342' },
                 ].map((pt, i) => (
                   <g key={i}>
-                    <circle cx={pt.x} cy={pt.y} r="5" fill="#161512" stroke="#f2eb87" strokeWidth="2.5" />
-                    <circle cx={pt.x} cy={pt.y} r="2" fill="#f2eb87" />
+                    <circle cx={pt.x} cy={pt.y} r="5" fill="var(--bg-card)" stroke="var(--color-theme)" strokeWidth="2.5" />
+                    <circle cx={pt.x} cy={pt.y} r="2" fill="var(--color-theme)" />
                   </g>
                 ))}
               </svg>

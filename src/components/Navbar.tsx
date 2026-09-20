@@ -24,6 +24,7 @@ import {
   Trophy,
   Sparkles,
   FolderGit2,
+  ArrowRight,
 } from 'lucide-react';
 
 function InstagramIcon({ className }: { className?: string }) {
@@ -146,12 +147,12 @@ export default function Navbar() {
         background: isScrolled ? 'var(--bg-primary)' : undefined,
       }}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between">
+      <div className="w-full max-w-[1480px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
+        <div className="flex items-center justify-between gap-4">
           {/* Brand Logo & Editorial Title: XII TJ — ANGKATAN 27 */}
-          <Link href="/" className="flex items-center gap-3.5 group flex-shrink-0">
+          <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
             <div
-              className="relative flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-xl border transition-all overflow-hidden shadow-inner group-hover:scale-105"
+              className="relative flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-xl border transition-all overflow-hidden shadow-inner group-hover:scale-105"
               style={{
                 backgroundColor: 'var(--bg-card)',
                 borderColor: 'var(--border-theme)',
@@ -166,18 +167,18 @@ export default function Navbar() {
                   onError={() => setLogoFailed(true)}
                 />
               ) : (
-                <span className="font-theme-heading font-black text-base sm:text-lg" style={{ color: 'var(--color-theme)' }}>
+                <span className="font-theme-heading font-black text-sm sm:text-base" style={{ color: 'var(--color-theme)' }}>
                   TJ
                 </span>
               )}
             </div>
-            <div className="flex flex-col">
-              <div className="flex items-center gap-2">
-                <span className="text-base sm:text-lg font-theme-heading font-black tracking-tight" style={{ color: 'var(--text-main)' }}>
+            <div className="flex flex-col justify-center">
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                <span className="text-base sm:text-lg font-theme-heading font-black tracking-tight leading-none" style={{ color: 'var(--text-main)' }}>
                   {settings.class_name?.includes('TJ') ? settings.class_name : 'XII TJ'}
                 </span>
                 <span
-                  className="text-[9px] sm:text-[10px] font-sans font-bold px-2 py-0.5 rounded-full border shadow-sm tracking-wider uppercase"
+                  className="text-[9px] sm:text-[10px] font-sans font-bold px-2 py-0.5 rounded-full border shadow-sm tracking-wider uppercase leading-tight"
                   style={{
                     backgroundColor: 'var(--color-theme-muted)',
                     color: 'var(--color-theme)',
@@ -187,18 +188,18 @@ export default function Navbar() {
                   ANGKATAN 27
                 </span>
               </div>
-              <span className="text-[11px] tracking-wider uppercase font-medium hidden sm:inline-block" style={{ color: 'var(--text-muted)' }}>
+              <span className="text-[10px] tracking-wider uppercase font-medium hidden 2xl:inline-block leading-tight mt-1" style={{ color: 'var(--text-muted)' }}>
                 {settings.class_subtitle || 'Teknik Komputer dan Jaringan'}
               </span>
             </div>
           </Link>
 
           {/* Desktop Nav Links */}
-          <nav className="hidden lg:flex items-center gap-1 xl:gap-2">
+          <nav className="hidden lg:flex items-center gap-1 xl:gap-1.5 flex-shrink-0">
             {/* 1. Home */}
             <Link
               href="/"
-              className={`px-3 py-1.5 rounded-xl text-xs font-semibold uppercase tracking-wider transition-all duration-200 ${
+              className={`px-2.5 xl:px-3 py-1.5 rounded-xl text-[11px] xl:text-xs font-semibold uppercase tracking-wider transition-all duration-200 ${
                 pathname === '/'
                   ? 'font-bold border'
                   : 'hover:opacity-100'
@@ -215,7 +216,7 @@ export default function Navbar() {
             {/* 2. Tentang */}
             <Link
               href="/tentang"
-              className={`px-3 py-1.5 rounded-xl text-xs font-semibold uppercase tracking-wider transition-all duration-200 ${
+              className={`px-2.5 xl:px-3 py-1.5 rounded-xl text-[11px] xl:text-xs font-semibold uppercase tracking-wider transition-all duration-200 ${
                 pathname === '/tentang'
                   ? 'font-bold border'
                   : 'hover:opacity-100'
@@ -232,7 +233,7 @@ export default function Navbar() {
             {/* 3. NEW: Project TKJ */}
             <Link
               href="/projects"
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold uppercase tracking-wider transition-all duration-200 flex items-center gap-1.5 ${
+              className={`px-2.5 xl:px-3 py-1.5 rounded-xl text-[11px] xl:text-xs font-semibold uppercase tracking-wider transition-all duration-200 flex items-center gap-1.5 ${
                 pathname.startsWith('/projects')
                   ? 'font-bold border shadow-sm'
                   : 'hover:opacity-100'
@@ -261,7 +262,7 @@ export default function Navbar() {
                 >
                   <button
                     onClick={() => setActiveDropdown(isMenuOpen ? null : group.name)}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-semibold uppercase tracking-wider transition-all duration-200 flex items-center gap-1.5 ${
+                    className={`px-2.5 xl:px-3 py-1.5 rounded-xl text-[11px] xl:text-xs font-semibold uppercase tracking-wider transition-all duration-200 flex items-center gap-1.5 ${
                       isGroupActive || isMenuOpen
                         ? 'font-bold border'
                         : 'hover:opacity-100'
@@ -340,7 +341,7 @@ export default function Navbar() {
           </nav>
 
           {/* Right Actions: Theme Switcher & Social Links */}
-          <div className="hidden lg:flex items-center gap-2">
+          <div className="hidden lg:flex items-center gap-1.5 xl:gap-2 flex-shrink-0">
             {/* Global Theme Switcher */}
             <ThemeSwitcher />
 
@@ -350,7 +351,7 @@ export default function Navbar() {
               target="_blank"
               rel="noreferrer"
               title="Instagram @networkengineering27"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs transition-all group"
+              className="flex items-center gap-1.5 p-2 xl:px-2.5 xl:py-1.5 rounded-xl border text-xs transition-all group hover:scale-105"
               style={{
                 backgroundColor: 'var(--bg-card)',
                 borderColor: 'var(--border-color)',
@@ -358,7 +359,7 @@ export default function Navbar() {
               }}
             >
               <InstagramIcon className="w-4 h-4 text-pink-400 group-hover:scale-110 transition-transform" />
-              <span className="text-[11px] font-medium tracking-wide">Instagram</span>
+              <span className="text-[11px] font-medium tracking-wide hidden 2xl:inline">Instagram</span>
             </a>
 
             {/* TikTok Link */}
@@ -367,7 +368,7 @@ export default function Navbar() {
               target="_blank"
               rel="noreferrer"
               title="TikTok @networkcomp.27"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs transition-all group"
+              className="flex items-center gap-1.5 p-2 xl:px-2.5 xl:py-1.5 rounded-xl border text-xs transition-all group hover:scale-105"
               style={{
                 backgroundColor: 'var(--bg-card)',
                 borderColor: 'var(--border-color)',
@@ -375,7 +376,7 @@ export default function Navbar() {
               }}
             >
               <TikTokIcon className="w-4 h-4 text-cyan-400 group-hover:scale-110 transition-transform" />
-              <span className="text-[11px] font-medium tracking-wide">TikTok</span>
+              <span className="text-[11px] font-medium tracking-wide hidden 2xl:inline">TikTok</span>
             </a>
           </div>
 
@@ -413,46 +414,84 @@ export default function Navbar() {
               borderColor: 'var(--border-color)',
             }}
           >
-            <div className="max-w-7xl mx-auto px-4 py-5 space-y-4 max-h-[80vh] overflow-y-auto">
-              {/* Quick links: Home, Tentang, Project TKJ */}
-              <div className="grid grid-cols-3 gap-2 pb-3 border-b border-white/10">
+            <div className="max-w-lg mx-auto px-4 py-5 space-y-5 max-h-[85vh] overflow-y-auto">
+              {/* 1. Quick Navigation: Home & Tentang */}
+              <div className="grid grid-cols-2 gap-2">
                 <Link
                   href="/"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="p-2.5 rounded-xl text-center text-xs font-bold uppercase tracking-wider transition-all"
+                  className="p-3 rounded-2xl text-center text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 border shadow-sm"
                   style={{
                     backgroundColor: pathname === '/' ? 'var(--color-theme)' : 'var(--bg-card)',
-                    color: pathname === '/' ? '#050505' : 'var(--text-main)',
+                    borderColor: pathname === '/' ? 'var(--color-theme)' : 'var(--border-color)',
+                    color: pathname === '/' ? '#020617' : 'var(--text-main)',
                   }}
                 >
-                  Home
+                  <Home className="w-4 h-4" />
+                  <span>Beranda</span>
                 </Link>
+
                 <Link
                   href="/tentang"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="p-2.5 rounded-xl text-center text-xs font-bold uppercase tracking-wider transition-all"
+                  className="p-3 rounded-2xl text-center text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 border shadow-sm"
                   style={{
                     backgroundColor: pathname === '/tentang' ? 'var(--color-theme)' : 'var(--bg-card)',
-                    color: pathname === '/tentang' ? '#050505' : 'var(--text-main)',
+                    borderColor: pathname === '/tentang' ? 'var(--color-theme)' : 'var(--border-color)',
+                    color: pathname === '/tentang' ? '#020617' : 'var(--text-main)',
                   }}
                 >
-                  Tentang
-                </Link>
-                <Link
-                  href="/projects"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="p-2.5 rounded-xl text-center text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-1"
-                  style={{
-                    backgroundColor: pathname.startsWith('/projects') ? 'var(--color-theme)' : 'var(--bg-card)',
-                    color: pathname.startsWith('/projects') ? '#050505' : 'var(--text-main)',
-                  }}
-                >
-                  <FolderGit2 className="w-3.5 h-3.5" />
-                  <span>Projects</span>
+                  <Info className="w-4 h-4" />
+                  <span>Tentang</span>
                 </Link>
               </div>
 
-              {/* Navigation Groups */}
+              {/* 2. PROMINENT FEATURED: Project TKJ Showcase */}
+              <Link
+                href="/projects"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center justify-between p-3.5 rounded-2xl border shadow-lg transition-all active:scale-[0.98]"
+                style={{
+                  backgroundColor: pathname.startsWith('/projects') ? 'var(--color-theme)' : 'var(--bg-card)',
+                  borderColor: 'var(--border-theme)',
+                  color: pathname.startsWith('/projects') ? '#020617' : 'var(--text-main)',
+                  boxShadow: '0 8px 24px -4px var(--theme-glow)',
+                }}
+              >
+                <div className="flex items-center gap-3">
+                  <div
+                    className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border shadow-inner"
+                    style={{
+                      backgroundColor: pathname.startsWith('/projects') ? '#020617' : 'var(--color-theme-muted)',
+                      borderColor: 'var(--border-theme)',
+                      color: pathname.startsWith('/projects') ? '#ffffff' : 'var(--color-theme)',
+                    }}
+                  >
+                    <FolderGit2 className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-sm leading-tight">Project TKJ</span>
+                      <span
+                        className="text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider border"
+                        style={{
+                          backgroundColor: pathname.startsWith('/projects') ? 'rgba(0,0,0,0.25)' : 'var(--color-theme-muted)',
+                          borderColor: 'var(--border-theme)',
+                          color: pathname.startsWith('/projects') ? '#020617' : 'var(--color-theme)',
+                        }}
+                      >
+                        Karya Siswa
+                      </span>
+                    </div>
+                    <p className="text-[11px] opacity-80 mt-0.5 leading-tight">
+                      Katalog portofolio karya, sistem jaringan, APK & IoT
+                    </p>
+                  </div>
+                </div>
+                <ArrowRight className="w-4 h-4 opacity-70 shrink-0" />
+              </Link>
+
+              {/* 3. Navigation Groups (All Website Pages) */}
               {NAV_GROUPS.map((group) => (
                 <div key={group.name} className="space-y-1.5">
                   <span className="text-[10px] uppercase font-bold tracking-widest px-2 block" style={{ color: 'var(--color-theme)' }}>
@@ -467,15 +506,32 @@ export default function Navbar() {
                           key={item.href}
                           href={item.href}
                           onClick={() => setMobileMenuOpen(false)}
-                          className="flex items-center gap-3 p-2.5 rounded-xl text-xs font-medium transition-all"
+                          className="flex items-center gap-3 p-2.5 rounded-xl text-xs font-medium transition-all border"
                           style={{
                             backgroundColor: isActive ? 'var(--color-theme-muted)' : 'transparent',
+                            borderColor: isActive ? 'var(--border-theme)' : 'transparent',
                             color: isActive ? 'var(--color-theme)' : 'var(--text-body)',
                             fontWeight: isActive ? 700 : 500,
                           }}
                         >
-                          <IconComp className="w-4 h-4" style={{ color: 'var(--color-theme)' }} />
-                          <span>{item.name}</span>
+                          <div
+                            className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 border"
+                            style={{
+                              backgroundColor: isActive ? 'var(--color-theme)' : 'var(--bg-card)',
+                              borderColor: 'var(--border-color)',
+                              color: isActive ? '#020617' : 'var(--color-theme)',
+                            }}
+                          >
+                            <IconComp className="w-3.5 h-3.5" />
+                          </div>
+                          <div>
+                            <span className="block leading-tight font-semibold text-xs" style={{ color: 'var(--text-main)' }}>
+                              {item.name}
+                            </span>
+                            <span className="block text-[10px] line-clamp-1 mt-0.5" style={{ color: 'var(--text-muted)' }}>
+                              {item.desc}
+                            </span>
+                          </div>
                         </Link>
                       );
                     })}
@@ -483,8 +539,42 @@ export default function Navbar() {
                 </div>
               ))}
 
-              {/* Portal Admin Mobile Access */}
-              <div className="pt-3 border-t border-white/10">
+              {/* 4. Social Links & Portal Admin */}
+              <div className="pt-3 border-t space-y-3" style={{ borderColor: 'var(--border-color)' }}>
+                {/* Social media links in mobile */}
+                <div className="grid grid-cols-2 gap-2">
+                  <a
+                    href={instagramLink}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center justify-center gap-2 p-2.5 rounded-xl border text-xs font-medium transition-all"
+                    style={{
+                      backgroundColor: 'var(--bg-card)',
+                      borderColor: 'var(--border-color)',
+                      color: 'var(--text-main)',
+                    }}
+                  >
+                    <InstagramIcon className="w-4 h-4 text-pink-400" />
+                    <span>Instagram</span>
+                  </a>
+
+                  <a
+                    href={tiktokLink}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center justify-center gap-2 p-2.5 rounded-xl border text-xs font-medium transition-all"
+                    style={{
+                      backgroundColor: 'var(--bg-card)',
+                      borderColor: 'var(--border-color)',
+                      color: 'var(--text-main)',
+                    }}
+                  >
+                    <TikTokIcon className="w-4 h-4 text-cyan-400" />
+                    <span>TikTok</span>
+                  </a>
+                </div>
+
+                {/* Portal Admin Mobile Access */}
                 <Link
                   href="/admin"
                   onClick={() => setMobileMenuOpen(false)}
