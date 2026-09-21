@@ -4,6 +4,7 @@ import React, { useState, useRef } from 'react';
 import { useClassData } from '@/context/ClassDataContext';
 import { GalleryItem, GalleryCategory } from '@/types';
 import { motion, AnimatePresence } from 'framer-motion';
+import { optimizeImageForUpload } from '@/lib/image-optimizer';
 import {
   Plus,
   Image as ImageIcon,
@@ -81,11 +82,12 @@ export default function AdminGaleriPage() {
   };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const rawFile = e.target.files?.[0];
+    if (!rawFile) return;
 
     setUploading(true);
     try {
+      const file = await optimizeImageForUpload(rawFile, 1200, 0.82);
       const body = new FormData();
       body.append('file', file);
       body.append('category', 'gallery');
@@ -106,6 +108,7 @@ export default function AdminGaleriPage() {
       alert('Terjadi kesalahan saat mengunggah foto.');
     } finally {
       setUploading(false);
+      if (e.target) e.target.value = '';
     }
   };
 
@@ -344,6 +347,15 @@ export default function AdminGaleriPage() {
                     accept="image/*"
                     className="hidden"
                   />
+                  <div className="mt-2 flex items-center gap-2">
+                    <input
+                      type="text"
+                      placeholder="Atau tempel tautan URL gambar (https://...)"
+                      value={formData.image_url || ''}
+                      onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+                      className="w-full px-3 py-2 rounded-xl text-xs bg-[#161512] border border-[#f5f1ca]/15 text-[#f5f1ca] focus:outline-none focus:border-[#f2eb87]"
+                    />
+                  </div>
                 </div>
 
                 {/* Judul & Kategori */}

@@ -31,6 +31,15 @@ export default function AdminJadwalPiketPage() {
     return dailySchedules && dailySchedules.length > 0 ? dailySchedules : INITIAL_DAILY_SCHEDULES;
   });
 
+  const isDirtyRef = React.useRef(false);
+
+  // Sync state if context changes from database
+  React.useEffect(() => {
+    if (!isDirtyRef.current && dailySchedules && dailySchedules.length > 0) {
+      setSchedules(dailySchedules);
+    }
+  }, [dailySchedules]);
+
   const [activeDayNumber, setActiveDayNumber] = useState<number>(1);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
@@ -66,6 +75,7 @@ export default function AdminJadwalPiketPage() {
     setSaving(true);
     const success = await updateDailySchedules(schedules);
     if (success) {
+      isDirtyRef.current = false;
       showToast('Jadwal pelajaran (2 blok) & regu piket berhasil disimpan ke server!');
     } else {
       alert('Gagal menyimpan jadwal.');

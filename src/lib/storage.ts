@@ -1,9 +1,9 @@
 import fs from 'fs';
 import path from 'path';
-import { CMSData } from '@/types';
+import { CMSData, Student, SiteSettings } from '@/types';
 import { INITIAL_CMS_DATA, INITIAL_STUDENTS, INITIAL_ROLES } from './seed-data';
 import { supabaseClient, isSupabaseConfigured } from './supabase';
-import { loadFromNeon, saveToNeon, isNeonConfigured } from './neon';
+import { loadFromNeon, saveToNeon, saveMediaFileToNeon, isNeonConfigured } from './neon';
 
 const DATA_DIR = path.join(process.cwd(), '.data');
 const DATA_FILE = path.join(DATA_DIR, 'class_cms_data.json');
@@ -48,6 +48,30 @@ function writeDataAtomic(data: CMSData): boolean {
 }
 
 /**
+ * Helper to offload heavy base64 data-urls to class_media_files
+ */
+function extractAndMigrateBase64(dataUrl: string, prefix: string): string {
+  if (!dataUrl || !dataUrl.startsWith('data:image/') || dataUrl.length < 3000) {
+    return dataUrl;
+  }
+
+  const match = dataUrl.match(/^data:([^;]+);base64,(.+)$/);
+  if (!match) return dataUrl;
+
+  const mimeType = match[1];
+  const b64 = match[2];
+  const ext = mimeType.includes('png') ? '.png' : mimeType.includes('webp') ? '.webp' : '.jpg';
+  const fileName = `${prefix}_${Date.now()}${ext}`;
+
+  // Non-blocking save to Neon media table
+  saveMediaFileToNeon(fileName, mimeType, b64, b64.length).catch((e) => {
+    console.warn(`Failed to auto-migrate base64 for ${fileName}:`, e);
+  });
+
+  return `/uploads/${fileName}`;
+}
+
+/**
  * Safe schema normalizer that NEVER destroys or overwrites user modifications
  */
 export function selfHealCMSData(raw: Partial<CMSData> | null | undefined): CMSData {
@@ -59,7 +83,17 @@ export function selfHealCMSData(raw: Partial<CMSData> | null | undefined): CMSDa
   }
 
   // Preserve user collections (even if empty); only seed if completely missing/undefined
-  const students = Array.isArray(raw.students) ? raw.students : INITIAL_STUDENTS;
+  const rawStudents = Array.isArray(raw.students) ? raw.students : INITIAL_STUDENTS;
+  const students = rawStudents.map((s) => {
+    if (s.photo_url && s.photo_url.startsWith('data:image/')) {
+      return {
+        ...s,
+        photo_url: extractAndMigrateBase64(s.photo_url, `std_${s.id || 'photo'}`),
+      };
+    }
+    return s;
+  });
+
   const roles = Array.isArray(raw.roles) ? raw.roles : INITIAL_ROLES;
   const announcements = Array.isArray(raw.announcements) ? raw.announcements : (INITIAL_CMS_DATA.announcements || []);
   const events = Array.isArray(raw.events) ? raw.events : (INITIAL_CMS_DATA.events || []);
@@ -87,9 +121,13 @@ export function selfHealCMSData(raw: Partial<CMSData> | null | undefined): CMSDa
     ...(raw.lab_settings || {}),
   };
 
+  const rawSettings = (raw.settings || {}) as Partial<SiteSettings>;
   const settings = {
     ...INITIAL_CMS_DATA.settings,
-    ...(raw.settings || {}),
+    ...rawSettings,
+    logo_url: extractAndMigrateBase64(rawSettings.logo_url || '', 'logo'),
+    hero_image_url: extractAndMigrateBase64(rawSettings.hero_image_url || '', 'hero'),
+    class_photo_url: extractAndMigrateBase64(rawSettings.class_photo_url || '', 'class_photo'),
   };
 
   return {
@@ -180,32 +218,54 @@ export async function getCMSData(forceRefresh: boolean = false): Promise<CMSData
   const now = Date.now();
 
   // 1. If memoryCache is already fresh and within TTL, return it
-  if (!forceRefresh && memoryCache && (now - lastCacheTime < CACHE_TTL_MS)) {
+  if (!forceRefresh && memoryCache && now - lastCacheTime < CACHE_TTL_MS) {
     return memoryCache;
   }
 
   // 2. Try Neon PostgreSQL if configured (Primary for Vercel & Production)
   if (isNeonConfigured) {
     try {
-      const neonData = await loadFromNeon();
-      if (neonData && Array.isArray(neonData.students)) {
-        const validated = selfHealCMSData(neonData);
+      const neonResult = await loadFromNeon();
+
+      if (neonResult.status === 'found') {
+        const validated = selfHealCMSData(neonResult.data);
         memoryCache = validated;
         lastCacheTime = Date.now();
+        // Keep local disk backup updated
+        writeDataAtomic(validated);
         return validated;
       }
 
-      // If Neon is connected but table is empty, seed it once
-      if (neonData === null) {
-        console.log('Neon DB is empty; initializing seed data...');
-        const initial = selfHealCMSData(INITIAL_CMS_DATA);
-        await saveToNeon(initial);
-        memoryCache = initial;
+      // If Neon is genuinely empty (0 rows found in clean table), seed it once
+      if (neonResult.status === 'empty') {
+        let initialToSave: CMSData | null = null;
+        if (fs.existsSync(DATA_FILE)) {
+          try {
+            const content = fs.readFileSync(DATA_FILE, 'utf8');
+            const parsed = JSON.parse(content);
+            if (parsed && Array.isArray(parsed.students)) {
+              initialToSave = selfHealCMSData(parsed);
+            }
+          } catch {}
+        }
+
+        if (!initialToSave) {
+          console.log('Neon DB is completely empty; initializing seed data...');
+          initialToSave = selfHealCMSData(INITIAL_CMS_DATA);
+        }
+
+        await saveToNeon(initialToSave);
+        memoryCache = initialToSave;
         lastCacheTime = Date.now();
-        return initial;
+        writeDataAtomic(initialToSave);
+        return initialToSave;
       }
-    } catch (neonErr) {
-      console.warn('Neon DB load error, falling back:', neonErr);
+
+      // If status === 'error', DO NOT OVERWRITE NEON DB!
+      // Fall through to memoryCache or local disk backup below
+      console.warn('Neon DB load error, falling back to local/cached data:', neonResult.error.message);
+    } catch (neonErr: any) {
+      console.warn('Neon DB load exception, falling back:', neonErr?.message || neonErr);
     }
   }
 
@@ -230,7 +290,7 @@ export async function getCMSData(forceRefresh: boolean = false): Promise<CMSData
       memoryCache = validated;
       lastCacheTime = Date.now();
 
-      // If Neon is configured but was empty/failed, attempt sync
+      // If Neon is configured and was clean/failed, attempt non-blocking sync
       if (isNeonConfigured) {
         saveToNeon(validated).catch((e) => console.warn('Neon background sync error:', e));
       }
@@ -241,18 +301,19 @@ export async function getCMSData(forceRefresh: boolean = false): Promise<CMSData
     console.warn('Local data file read error:', err);
   }
 
-  // 5. Default initial seed
+  // 5. If we have a previous in-memory cache, return it rather than reverting to initial seed!
+  if (memoryCache && Array.isArray(memoryCache.students)) {
+    return memoryCache;
+  }
+
+  // 6. Default initial seed (only if absolutely no data exists anywhere)
   const initialized = selfHealCMSData(INITIAL_CMS_DATA);
   memoryCache = initialized;
   lastCacheTime = Date.now();
   writeDataAtomic(initialized);
 
   if (isNeonConfigured) {
-    try {
-      await saveToNeon(initialized);
-    } catch (e) {
-      console.warn('Neon init save error:', e);
-    }
+    saveToNeon(initialized).catch((e) => console.warn('Neon init save error:', e));
   }
 
   return initialized;
@@ -282,13 +343,10 @@ export async function saveCMSData(data: CMSData): Promise<CMSData> {
 
   // Sync to Neon PostgreSQL (primary for Vercel) - MUST BE AWAITED!
   if (isNeonConfigured) {
-    try {
-      const success = await saveToNeon(validated);
-      if (!success) {
-        console.error('saveToNeon returned false during saveCMSData');
-      }
-    } catch (err) {
-      console.error('Neon DB save error during saveCMSData:', err);
+    const success = await saveToNeon(validated);
+    if (!success) {
+      console.error('saveToNeon returned false during saveCMSData');
+      throw new Error('Gagal menyimpan perubahan ke database Neon PostgreSQL. Periksa koneksi database.');
     }
   }
 

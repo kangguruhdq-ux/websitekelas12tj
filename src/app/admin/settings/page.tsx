@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useClassData } from '@/context/ClassDataContext';
 import { SiteSettings, GalleryItem, GalleryCategory, ClassMemoryPhoto } from '@/types';
 import { motion } from 'framer-motion';
+import { optimizeImageForUpload } from '@/lib/image-optimizer';
 import {
   Settings,
   Upload,
@@ -49,6 +50,15 @@ export default function AdminSettingsPage() {
   } = useClassData();
 
   const [formData, setFormData] = useState<SiteSettings>({ ...settings });
+  const isDirtyRef = useRef(false);
+
+  // Keep formData in sync with settings from database until user starts editing
+  useEffect(() => {
+    if (!isDirtyRef.current && settings && settings.class_name) {
+      setFormData({ ...settings });
+    }
+  }, [settings]);
+
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [uploadingHero, setUploadingHero] = useState(false);
@@ -120,11 +130,12 @@ export default function AdminSettingsPage() {
   };
 
   const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const rawFile = e.target.files?.[0];
+    if (!rawFile) return;
 
     setUploadingLogo(true);
     try {
+      const file = await optimizeImageForUpload(rawFile, 1000, 0.82);
       const body = new FormData();
       body.append('file', file);
       body.append('category', 'brand');
@@ -141,15 +152,17 @@ export default function AdminSettingsPage() {
       alert('Error mengunggah logo: ' + err.message);
     } finally {
       setUploadingLogo(false);
+      if (e.target) e.target.value = '';
     }
   };
 
   const handleHeroUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const rawFile = e.target.files?.[0];
+    if (!rawFile) return;
 
     setUploadingHero(true);
     try {
+      const file = await optimizeImageForUpload(rawFile, 1200, 0.82);
       const body = new FormData();
       body.append('file', file);
       body.append('category', 'hero');
@@ -166,16 +179,18 @@ export default function AdminSettingsPage() {
       alert('Error mengunggah foto hero: ' + err.message);
     } finally {
       setUploadingHero(false);
+      if (e.target) e.target.value = '';
     }
   };
 
   // Gallery direct upload handler in settings
   const handleGalleryPhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const rawFile = e.target.files?.[0];
+    if (!rawFile) return;
 
     setUploadingGallery(true);
     try {
+      const file = await optimizeImageForUpload(rawFile, 1200, 0.82);
       const body = new FormData();
       body.append('file', file);
       body.append('category', 'gallery');
@@ -186,7 +201,7 @@ export default function AdminSettingsPage() {
         setGalleryFormData((prev) => ({
           ...prev,
           image_url: json.url,
-          title: prev.title || file.name.replace(/\.[^/.]+$/, ''),
+          title: prev.title || rawFile.name.replace(/\.[^/.]+$/, ''),
         }));
         showToast('Foto galeri berhasil diunggah!');
       } else {
@@ -196,15 +211,17 @@ export default function AdminSettingsPage() {
       alert('Error mengunggah: ' + err.message);
     } finally {
       setUploadingGallery(false);
+      if (e.target) e.target.value = '';
     }
   };
 
   const handleClassPhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const rawFile = e.target.files?.[0];
+    if (!rawFile) return;
 
     setUploadingClassPhoto(true);
     try {
+      const file = await optimizeImageForUpload(rawFile, 1400, 0.85);
       const body = new FormData();
       body.append('file', file);
       body.append('category', 'class_photo');
@@ -221,15 +238,17 @@ export default function AdminSettingsPage() {
       alert('Error mengunggah foto: ' + err.message);
     } finally {
       setUploadingClassPhoto(false);
+      if (e.target) e.target.value = '';
     }
   };
 
   const handleMemoryPhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const rawFile = e.target.files?.[0];
+    if (!rawFile) return;
 
     setUploadingMemoryPhoto(true);
     try {
+      const file = await optimizeImageForUpload(rawFile, 1200, 0.82);
       const body = new FormData();
       body.append('file', file);
       body.append('category', 'memory_photo');
@@ -240,7 +259,7 @@ export default function AdminSettingsPage() {
         setNewMemory((prev) => ({
           ...prev,
           image_url: json.url,
-          title: prev.title || file.name.replace(/\.[^/.]+$/, ''),
+          title: prev.title || rawFile.name.replace(/\.[^/.]+$/, ''),
         }));
         showToast('Foto momen kenangan berhasil diunggah!');
       } else {
@@ -250,6 +269,7 @@ export default function AdminSettingsPage() {
       alert('Error: ' + err.message);
     } finally {
       setUploadingMemoryPhoto(false);
+      if (e.target) e.target.value = '';
     }
   };
 
@@ -346,6 +366,7 @@ export default function AdminSettingsPage() {
     e.preventDefault();
     const success = await updateSettings(formData);
     if (success) {
+      isDirtyRef.current = false;
       showToast('Pengaturan website berhasil disimpan dan diperbarui!');
     } else {
       alert('Gagal menyimpan pengaturan.');

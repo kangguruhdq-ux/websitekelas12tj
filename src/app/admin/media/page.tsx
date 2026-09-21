@@ -3,6 +3,7 @@
 import React, { useState, useMemo, useRef } from 'react';
 import { useClassData } from '@/context/ClassDataContext';
 import { motion, AnimatePresence } from 'framer-motion';
+import { optimizeImageForUpload } from '@/lib/image-optimizer';
 import {
   FolderOpen,
   Upload,
@@ -114,11 +115,12 @@ export default function AdminMediaPage() {
   };
 
   const handleDirectUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const rawFile = e.target.files?.[0];
+    if (!rawFile) return;
 
     setUploading(true);
     try {
+      const file = await optimizeImageForUpload(rawFile, 1400, 0.82);
       const body = new FormData();
       body.append('file', file);
       body.append('category', 'media-center');
@@ -129,7 +131,7 @@ export default function AdminMediaPage() {
         const newItem: MediaFile = {
           id: `custom-${Date.now()}`,
           url: json.url,
-          name: file.name,
+          name: rawFile.name,
           source: 'Upload',
           date: new Date().toISOString(),
         };
@@ -143,6 +145,7 @@ export default function AdminMediaPage() {
       alert('Error saat mengunggah: ' + err.message);
     } finally {
       setUploading(false);
+      if (e.target) e.target.value = '';
     }
   };
 

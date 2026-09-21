@@ -5,6 +5,7 @@ import { useClassData } from '@/context/ClassDataContext';
 import { Student, Gender } from '@/types';
 import { getStudentAvatarUrl } from '@/lib/seed-data';
 import { motion, AnimatePresence } from 'framer-motion';
+import { optimizeImageForUpload } from '@/lib/image-optimizer';
 import {
   Plus,
   Search,
@@ -88,11 +89,14 @@ export default function AdminSiswaPage() {
   };
 
   const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const rawFile = e.target.files?.[0];
+    if (!rawFile) return;
 
     setUploadingPhoto(true);
     try {
+      // Auto compress phone camera photos (max 1000px, 0.82 quality) down to ~60-120KB
+      const file = await optimizeImageForUpload(rawFile, 1000, 0.82);
+
       const body = new FormData();
       body.append('file', file);
       body.append('category', 'students');
@@ -105,14 +109,15 @@ export default function AdminSiswaPage() {
       const data = await res.json();
       if (res.ok && data.url) {
         setFormData((prev) => ({ ...prev, photo_url: data.url }));
-        showToast('Foto siswa berhasil diunggah.');
+        showToast('Foto siswa berhasil diunggah & disimpan ke database.');
       } else {
         alert(data.error || 'Gagal mengunggah foto.');
       }
-    } catch {
-      alert('Terjadi kesalahan saat mengunggah foto.');
+    } catch (err: any) {
+      alert('Terjadi kesalahan saat mengunggah foto: ' + (err?.message || 'Error'));
     } finally {
       setUploadingPhoto(false);
+      if (e.target) e.target.value = '';
     }
   };
 
@@ -403,9 +408,9 @@ export default function AdminSiswaPage() {
                       Foto Profil Siswa
                     </span>
                     <p className="text-[11px] text-[#9e9a8d]">
-                      Format JPG/PNG. Jika dikosongkan, avatar digital otomatis digunakan.
+                      Format JPG/PNG (otomatis dikompres & disimpan ke database). Bisa upload file atau masukkan link gambar langsung.
                     </p>
-                    <div className="flex items-center gap-2 pt-1">
+                    <div className="flex flex-wrap items-center gap-2 pt-1">
                       <input
                         type="file"
                         ref={fileInputRef}
@@ -420,7 +425,7 @@ export default function AdminSiswaPage() {
                         className="px-3 py-1.5 rounded-xl bg-[#f2eb87] text-[#161512] font-bold flex items-center gap-1.5 text-[11px] hover:bg-[#e6df73] transition-colors"
                       >
                         <Upload className="w-3.5 h-3.5" />
-                        <span>{uploadingPhoto ? 'Mengunggah...' : 'Pilih Foto'}</span>
+                        <span>{uploadingPhoto ? 'Mengunggah...' : 'Pilih File Foto'}</span>
                       </button>
                       {formData.photo_url && (
                         <button
@@ -428,9 +433,19 @@ export default function AdminSiswaPage() {
                           onClick={() => setFormData({ ...formData, photo_url: '' })}
                           className="px-2.5 py-1.5 rounded-xl text-red-400 hover:bg-red-500/10 text-[11px] transition-colors"
                         >
-                          Hapus Foto
+                          Hapus / Reset Foto
                         </button>
                       )}
+                    </div>
+                    {/* Direct Image URL input option */}
+                    <div className="pt-2">
+                      <input
+                        type="text"
+                        placeholder="Atau tempel URL gambar (https://...)"
+                        value={formData.photo_url || ''}
+                        onChange={(e) => setFormData({ ...formData, photo_url: e.target.value.trim() })}
+                        className="w-full px-3 py-1.5 rounded-xl bg-[#1f1d19] border border-[#f5f1ca]/15 text-[#f5f1ca] text-[11px] focus:outline-none focus:border-[#f2eb87]"
+                      />
                     </div>
                   </div>
                 </div>

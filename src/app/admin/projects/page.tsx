@@ -5,6 +5,7 @@ import { useClassData } from '@/context/ClassDataContext';
 import { ClassProject, ProjectCategory, ProjectStatus } from '@/types';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import { optimizeImageForUpload } from '@/lib/image-optimizer';
 import {
   FolderGit2,
   Plus,
@@ -180,11 +181,12 @@ export default function AdminProjectsPage() {
   };
 
   const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const rawFile = e.target.files?.[0];
+    if (!rawFile) return;
 
     setUploadingCover(true);
     try {
+      const file = await optimizeImageForUpload(rawFile, 1200, 0.82);
       const body = new FormData();
       body.append('file', file);
       body.append('category', 'projects');
@@ -205,6 +207,7 @@ export default function AdminProjectsPage() {
       alert('Terjadi kesalahan saat mengunggah cover.');
     } finally {
       setUploadingCover(false);
+      if (e.target) e.target.value = '';
     }
   };
 

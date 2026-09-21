@@ -101,17 +101,32 @@ export function ClassDataProvider({
   stateRef.current = data;
 
   /**
-   * Safe setter with localStorage persistence
+   * Safe setter with localStorage persistence and timestamp check
    */
-  const updateDataSafely = useCallback((newData: CMSData) => {
-    setData(newData);
-    stateRef.current = newData;
-    if (typeof window !== 'undefined') {
-      try {
-        localStorage.setItem(APP_STORAGE_KEY, JSON.stringify(newData));
-      } catch (e) {
-        console.warn('Failed to write to localStorage:', e);
+  const updateDataSafely = useCallback((newData: CMSData, force: boolean = false) => {
+    if (!newData || !Array.isArray(newData.students)) return;
+
+    const currentTimestamp = Number(stateRef.current?.timestamp) || 0;
+    const newTimestamp = Number(newData.timestamp) || 0;
+
+    // Only apply update if forced, or incoming data timestamp is newer/equal, or current data timestamp is 0
+    if (force || newTimestamp >= currentTimestamp || currentTimestamp === 0) {
+      setData(newData);
+      stateRef.current = newData;
+      if (typeof window !== 'undefined') {
+        try {
+          localStorage.setItem(APP_STORAGE_KEY, JSON.stringify(newData));
+          // Clean legacy cache keys
+          LEGACY_STORAGE_KEYS.forEach((k) => localStorage.removeItem(k));
+        } catch (e) {
+          console.warn('Failed to write to localStorage:', e);
+        }
       }
+    } else {
+      console.warn('Skipped stale CMS data update:', {
+        incoming: newTimestamp,
+        current: currentTimestamp,
+      });
     }
   }, []);
 
@@ -166,7 +181,7 @@ export function ClassDataProvider({
         const serverData = await fetchCMSDataShared();
 
         if (serverData && Array.isArray(serverData.students)) {
-          updateDataSafely(serverData);
+          updateDataSafely(serverData, force);
           setLastSynced(Date.now());
         }
       } catch (err: any) {
@@ -184,23 +199,21 @@ export function ClassDataProvider({
   useEffect(() => {
     setHasHydrated(true);
 
-    if (initialData && Array.isArray(initialData.students)) {
-      stateRef.current = initialData;
-      if (typeof window !== 'undefined') {
-        try {
-          localStorage.setItem(APP_STORAGE_KEY, JSON.stringify(initialData));
-        } catch (e) {
-          console.warn('LocalStorage save error:', e);
-        }
-      }
-    } else if (typeof window !== 'undefined') {
+    let activeData: CMSData = initialData || INITIAL_CMS_DATA;
+    let activeTimestamp = Number(initialData?.timestamp) || 0;
+
+    // Check if client localStorage has a newer snapshot than SSR initialData
+    if (typeof window !== 'undefined') {
       try {
         const cached = localStorage.getItem(APP_STORAGE_KEY);
         if (cached) {
           const parsed = JSON.parse(cached);
           if (parsed && Array.isArray(parsed.students)) {
-            setData(parsed);
-            stateRef.current = parsed;
+            const cachedTimestamp = Number(parsed.timestamp) || 0;
+            if (cachedTimestamp > activeTimestamp) {
+              activeData = parsed;
+              activeTimestamp = cachedTimestamp;
+            }
           }
         }
       } catch (e) {
@@ -208,7 +221,11 @@ export function ClassDataProvider({
       }
     }
 
-    refreshData(true);
+    setData(activeData);
+    stateRef.current = activeData;
+
+    // Always fetch the freshest state from server without overwriting if server is stale
+    refreshData(false);
   }, [refreshData, initialData]);
 
   // Generic POST action runner with optimistic update & rollback
@@ -224,7 +241,7 @@ export function ClassDataProvider({
 
         const json = await res.json();
         if (json.success && json.data) {
-          updateDataSafely(json.data);
+          updateDataSafely(json.data, true);
           setLastSynced(Date.now());
           return true;
         } else {
