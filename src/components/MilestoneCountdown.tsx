@@ -75,9 +75,9 @@ export default function MilestoneCountdown() {
                 <span className="text-[10px] uppercase font-bold tracking-wider text-[#f2eb87] block">
                   {settings.milestone_ukk_title || 'Uji Kompetensi Keahlian (UKK)'}
                 </span>
-                <h4 className="font-serif-title font-bold text-lg text-[#f5f1ca]">
+                <h3 className="font-serif-title font-bold text-lg text-[#f5f1ca]">
                   {settings.milestone_ukk_subtitle || 'Sertifikasi Praktik TKJ 2027'}
-                </h4>
+                </h3>
               </div>
             </div>
             <span className="px-2.5 py-1 rounded-full text-[10px] font-semibold bg-[#161512] text-[#f2eb87] border border-[#f2eb87]/30">
@@ -93,7 +93,7 @@ export default function MilestoneCountdown() {
               { label: 'Detik', val: timeLeftUkk.seconds },
             ].map((item) => (
               <div key={item.label} className="p-3 rounded-2xl bg-[#161512] border border-[#f5f1ca]/10">
-                <span className="font-serif-title font-bold text-2xl sm:text-3xl text-[#f2eb87] block">
+                <span suppressHydrationWarning className="font-serif-title font-bold text-2xl sm:text-3xl text-[#f2eb87] block">
                   {item.val}
                 </span>
                 <span className="text-[10px] text-[#9e9a8d] uppercase tracking-wider">{item.label}</span>
@@ -122,9 +122,9 @@ export default function MilestoneCountdown() {
                 <span className="text-[10px] uppercase font-bold tracking-wider text-[#f2eb87] block">
                   {settings.milestone_wisuda_title || 'Puncak Angkatan'}
                 </span>
-                <h4 className="font-serif-title font-bold text-lg text-[#f5f1ca]">
+                <h3 className="font-serif-title font-bold text-lg text-[#f5f1ca]">
                   {settings.milestone_wisuda_subtitle || 'Wisuda & Pelepasan XII TKJ'}
-                </h4>
+                </h3>
               </div>
             </div>
             <span className="px-2.5 py-1 rounded-full text-[10px] font-semibold bg-[#161512] text-[#f2eb87] border border-[#f2eb87]/30">
@@ -140,7 +140,7 @@ export default function MilestoneCountdown() {
               { label: 'Detik', val: timeLeftGrad.seconds },
             ].map((item) => (
               <div key={item.label} className="p-3 rounded-2xl bg-[#161512] border border-[#f5f1ca]/10">
-                <span className="font-serif-title font-bold text-2xl sm:text-3xl text-[#f5f1ca] block">
+                <span suppressHydrationWarning className="font-serif-title font-bold text-2xl sm:text-3xl text-[#f5f1ca] block">
                   {item.val}
                 </span>
                 <span className="text-[10px] text-[#9e9a8d] uppercase tracking-wider">{item.label}</span>

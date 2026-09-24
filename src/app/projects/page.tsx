@@ -384,6 +384,7 @@ export default function ProjectsPage() {
                       {/* Card Action Button */}
                       <Link
                         href={`/projects/${project.id}`}
+                        aria-label={`Lihat detail project ${project.name}`}
                         className="w-full py-2.5 rounded-xl text-center text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 border group-hover:scale-[1.01]"
                         style={{
                           backgroundColor: 'var(--color-theme)',

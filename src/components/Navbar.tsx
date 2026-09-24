@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useClassData } from '@/context/ClassDataContext';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -159,10 +160,11 @@ export default function Navbar() {
               }}
             >
               {settings.logo_url && !logoFailed ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
+                <Image
                   src={settings.logo_url}
                   alt={settings.class_name || 'XII TJ'}
+                  width={40}
+                  height={40}
                   className="w-full h-full object-cover"
                   onError={() => setLogoFailed(true)}
                 />

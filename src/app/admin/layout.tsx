@@ -27,10 +27,12 @@ import {
   Clock,
   FolderGit2,
   Monitor,
+  Camera,
 } from 'lucide-react';
 
 const ADMIN_NAV = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
+  { name: 'Ganti Foto & Logo', href: '/admin/foto-logo', icon: Camera },
   { name: 'Siswa', href: '/admin/siswa', icon: Users },
   { name: 'Struktur Kelas', href: '/admin/struktur', icon: Network },
   { name: 'Projects TKJ', href: '/admin/projects', icon: FolderGit2 },

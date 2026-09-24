@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useClassData } from '@/context/ClassDataContext';
 import { Mail, Shield, Sparkles, MapPin, Phone } from 'lucide-react';
@@ -68,10 +69,11 @@ export default function Footer() {
           <div className="md:col-span-5 space-y-5">
             <div className="flex items-center gap-3">
               {settings.logo_url ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
+                <Image
                   src={settings.logo_url}
-                  alt={settings.class_name}
+                  alt={settings.class_name || 'XII TJ'}
+                  width={40}
+                  height={40}
                   className="w-10 h-10 rounded-xl object-cover border"
                   style={{ borderColor: 'var(--border-color)' }}
                 />

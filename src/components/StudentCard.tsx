@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { Student } from '@/types';
 import { getStudentAvatarUrl } from '@/lib/seed-data';
 import { motion } from 'framer-motion';
@@ -29,10 +30,11 @@ export default function StudentCard({ student, onClick }: StudentCardProps) {
         {/* Avatar & Header */}
         <div className="flex items-start justify-between gap-3 mb-4">
           <div className="relative w-16 h-16 rounded-2xl overflow-hidden bg-[#161512] border border-[#f5f1ca]/20 shadow-inner flex-shrink-0 group-hover:scale-105 transition-transform duration-300">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <Image
               src={photo}
               alt={student.name}
+              width={64}
+              height={64}
               className="w-full h-full object-cover"
               loading="lazy"
             />

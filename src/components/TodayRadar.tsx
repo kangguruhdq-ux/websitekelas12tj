@@ -23,11 +23,13 @@ export default function TodayRadar() {
   const [currentDayNum, setCurrentDayNum] = useState<number>(1);
   const [selectedDay, setSelectedDay] = useState<number>(1);
   const [selectedBlockFilter, setSelectedBlockFilter] = useState<'all' | 'teori' | 'praktik'>('all');
+  const [mounted, setMounted] = useState<boolean>(false);
 
   const schedulesToUse: DayScheduleItem[] =
     dailySchedules && dailySchedules.length > 0 ? dailySchedules : INITIAL_DAILY_SCHEDULES;
 
   useEffect(() => {
+    setMounted(true);
     const today = new Date().getDay();
     // Default to Monday (1) if weekend
     const effectiveDay = today >= 1 && today <= 5 ? today : 1;
@@ -84,7 +86,7 @@ export default function TodayRadar() {
               <button
                 key={d.dayNumber}
                 onClick={() => setSelectedDay(d.dayNumber)}
-                className={`relative px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all whitespace-nowrap ${
+                className={`relative px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-colors duration-200 whitespace-nowrap ${
                   selectedDay === d.dayNumber
                     ? 'text-[#161512] font-bold shadow-md shadow-[#f2eb87]/20'
                     : 'text-[#9e9a8d] hover:text-[#f5f1ca]'
@@ -99,7 +101,7 @@ export default function TodayRadar() {
                 )}
                 <span className="relative z-10 flex items-center gap-1">
                   {d.dayName}
-                  {currentDayNum === d.dayNumber && (
+                  {mounted && currentDayNum === d.dayNumber && (
                     <span className={`w-1.5 h-1.5 rounded-full ${selectedDay === d.dayNumber ? 'bg-emerald-900' : 'bg-emerald-400'}`} />
                   )}
                 </span>

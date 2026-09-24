@@ -15,6 +15,7 @@ import {
   FolderGit2,
 } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function HeroSection() {
   const { settings, students } = useClassData();
@@ -241,11 +242,13 @@ export default function HeroSection() {
                     borderColor: 'var(--border-color)',
                   }}
                 >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
+                  <Image
                     src={settings.hero_image_url}
                     alt="Hero Dokumentasi Kelas"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    fill
+                    priority
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 600px"
+                    className="object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex items-end p-4 sm:p-5">
                     <div>

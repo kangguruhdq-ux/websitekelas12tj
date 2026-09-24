@@ -4,8 +4,7 @@ import { ThemeProvider } from '@/context/ThemeContext';
 import { ClassDataProvider } from '@/context/ClassDataContext';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import InteractivePetBot from '@/components/InteractivePetBot';
-import TerminalModal from '@/components/TerminalModal';
+import ClientWidgets from '@/components/ClientWidgets';
 import { getCMSData } from '@/lib/storage';
 
 export const metadata: Metadata = {
@@ -44,9 +43,8 @@ export default async function RootLayout({
             <Navbar />
             <main className="flex-grow">{children}</main>
             <Footer />
-            {/* Global Interactive Elements */}
-            <InteractivePetBot />
-            <TerminalModal />
+            {/* Global Interactive Client Widgets (deferred with ssr: false) */}
+            <ClientWidgets />
           </ClassDataProvider>
         </ThemeProvider>
       </body>

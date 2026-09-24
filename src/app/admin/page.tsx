@@ -3,6 +3,7 @@
 import React from 'react';
 import { useClassData } from '@/context/ClassDataContext';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 import {
   Users,
   Network,
@@ -17,6 +18,7 @@ import {
   ShieldCheck,
   Cpu,
   FolderGit2,
+  Camera,
 } from 'lucide-react';
 
 export default function AdminDashboardPage() {
@@ -116,6 +118,23 @@ export default function AdminDashboardPage() {
           <p className="text-xs sm:text-sm text-[#d8d6c6]/80 max-w-3xl leading-relaxed">
             Kelola seluruh data anggota siswa, katalog karya inovasi Project TKJ, struktur fungsionaris, warta pengumuman, agenda program kerja, dokumentasi galeri, serta pengaturan identitas visual website resmi XII TJ — Teknik Komputer dan Jaringan secara real-time.
           </p>
+
+          <div className="pt-2 flex flex-wrap items-center gap-3">
+            <Link
+              href="/admin/foto-logo"
+              className="px-4 py-2 rounded-xl bg-[#f2eb87] text-[#161512] hover:bg-[#e0d970] text-xs font-bold inline-flex items-center gap-2 shadow-md shadow-[#f2eb87]/20 transition-all active:scale-95"
+            >
+              <Camera className="w-3.5 h-3.5" />
+              <span>Ganti Foto & Logo Website</span>
+            </Link>
+            <Link
+              href="/admin/siswa"
+              className="px-4 py-2 rounded-xl bg-[#161512] border border-[#f5f1ca]/15 hover:border-[#f2eb87] text-[#f5f1ca] text-xs font-semibold inline-flex items-center gap-2 transition-colors"
+            >
+              <Users className="w-3.5 h-3.5 text-[#f2eb87]" />
+              <span>Kelola Siswa</span>
+            </Link>
+          </div>
         </div>
       </motion.div>
 

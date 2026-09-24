@@ -61,14 +61,14 @@ export async function optimizeImageForUpload(
               return;
             }
 
-            const cleanName = file.name.replace(/\.[^/.]+$/, '') + '.jpg';
+            const cleanName = file.name.replace(/\.[^/.]+$/, '') + '.webp';
             const optimizedFile = new File([blob], cleanName, {
-              type: 'image/jpeg',
+              type: 'image/webp',
               lastModified: Date.now(),
             });
             resolve(optimizedFile);
           },
-          'image/jpeg',
+          'image/webp',
           quality
         );
       };

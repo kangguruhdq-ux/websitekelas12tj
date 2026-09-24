@@ -82,8 +82,9 @@ export default function FloatingStudentCarousel({ students }: FloatingStudentCar
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.4, delay: Math.min(idx * 0.05, 0.5) }}
+            transition={{ duration: 0.4, delay: Math.min(idx * 0.05, 0.4) }}
             className="w-[280px] sm:w-[310px] flex-shrink-0 snap-start"
+            style={{ contentVisibility: 'auto', containIntrinsicSize: '280px 360px' }}
           >
             <StudentCard student={student} onClick={() => setSelectedStudent(student)} />
           </motion.div>
@@ -91,7 +92,9 @@ export default function FloatingStudentCarousel({ students }: FloatingStudentCar
       </div>
 
       {/* Detail Modal */}
-      <StudentModal student={selectedStudent} onClose={() => setSelectedStudent(null)} />
+      {selectedStudent && (
+        <StudentModal student={selectedStudent} onClose={() => setSelectedStudent(null)} />
+      )}
     </div>
   );
 }

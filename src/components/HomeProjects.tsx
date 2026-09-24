@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useClassData } from '@/context/ClassDataContext';
 import { motion } from 'framer-motion';
 import { FolderGit2, ArrowRight, Sparkles, ExternalLink, Users } from 'lucide-react';
@@ -86,11 +87,12 @@ export default function HomeProjects() {
               {/* Cover Preview */}
               <div className="relative aspect-video w-full overflow-hidden bg-black/40">
                 {project.cover_url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
+                  <Image
                     src={project.cover_url}
                     alt={project.name}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 380px"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
                     loading="lazy"
                   />
                 ) : (
@@ -137,6 +139,7 @@ export default function HomeProjects() {
 
                 <Link
                   href={`/projects/${project.id}`}
+                  aria-label={`Lihat detail project ${project.name}`}
                   className="w-full py-2.5 rounded-xl text-center text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 border group-hover:scale-[1.01]"
                   style={{
                     backgroundColor: 'var(--color-theme)',

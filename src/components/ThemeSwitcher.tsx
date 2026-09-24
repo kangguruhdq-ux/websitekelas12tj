@@ -34,7 +34,7 @@ export default function ThemeSwitcher() {
       {/* Trigger Button */}
       <button
         onClick={() => setIsOpen((prev) => !prev)}
-        className="flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-semibold uppercase tracking-wider transition-all duration-300"
+        className="flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-semibold uppercase tracking-wider transition-colors duration-200"
         style={{
           backgroundColor: 'var(--bg-card)',
           borderColor: isOpen ? 'var(--color-theme)' : 'var(--border-theme)',
@@ -94,7 +94,7 @@ export default function ThemeSwitcher() {
                       setTheme(item.id);
                       setIsOpen(false);
                     }}
-                    className={`w-full text-left p-2.5 rounded-xl transition-all duration-200 flex items-center justify-between group relative overflow-hidden ${
+                    className={`w-full text-left p-2.5 rounded-xl transition-colors duration-150 flex items-center justify-between group relative overflow-hidden ${
                       isSelected
                         ? 'ring-1 shadow-sm'
                         : 'hover:bg-white/5'
