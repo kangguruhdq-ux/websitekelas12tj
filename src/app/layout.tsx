@@ -7,23 +7,36 @@ import Footer from '@/components/Footer';
 import ClientWidgets from '@/components/ClientWidgets';
 import { getCMSData } from '@/lib/storage';
 
-export const metadata: Metadata = {
-  title: 'XII TJ — Angkatan 27 | Teknik Komputer dan Jaringan',
-  description: 'Portal resmi XII TJ (Teknik Komputer dan Jaringan) Angkatan 27. Wadah kebersamaan, persaudaraan, dan showcase karya teknologi siswa.',
-  keywords: ['XII TJ', 'Angkatan 27', 'Teknik Komputer dan Jaringan', 'XII TKJ', 'Portal Kelas', 'Project TKJ'],
-  authors: [{ name: 'Keluarga Besar XII TJ Angkatan 27' }],
-  openGraph: {
-    title: 'XII TJ — Angkatan 27 | Teknik Komputer dan Jaringan',
-    description: 'Portal resmi XII TJ (Teknik Komputer dan Jaringan) Angkatan 27. Wadah kebersamaan, persaudaraan, dan showcase karya teknologi siswa.',
-    url: 'https://tkj-class.vercel.app',
-    siteName: 'XII TJ Angkatan 27 Portal',
-    locale: 'id_ID',
-    type: 'website',
-  },
-  icons: {
-    icon: '/favicon.ico',
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const data = await getCMSData(true);
+  const logoUrl = data.settings?.logo_url || '/favicon.ico';
+  const className = data.settings?.class_name || 'XII TJ';
+  const description = data.settings?.description || 'Portal resmi XII TJ (Teknik Komputer dan Jaringan) Angkatan 27. Wadah kebersamaan, persaudaraan, dan showcase karya teknologi siswa.';
+
+  return {
+    title: `${className} — Angkatan 27 | Teknik Komputer dan Jaringan`,
+    description,
+    keywords: ['XII TJ', 'Angkatan 27', 'Teknik Komputer dan Jaringan', 'XII TKJ', 'Portal Kelas', 'Project TKJ'],
+    authors: [{ name: `Keluarga Besar ${className} Angkatan 27` }],
+    openGraph: {
+      title: `${className} — Angkatan 27 | Teknik Komputer dan Jaringan`,
+      description,
+      url: 'https://tkj-class.vercel.app',
+      siteName: `${className} Angkatan 27 Portal`,
+      locale: 'id_ID',
+      type: 'website',
+      images: data.settings?.logo_url ? [{ url: data.settings.logo_url }] : undefined,
+    },
+    icons: {
+      icon: [
+        { url: logoUrl },
+        { url: '/favicon.ico' },
+      ],
+      shortcut: [logoUrl],
+      apple: [logoUrl],
+    },
+  };
+}
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -34,9 +47,15 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const initialData = await getCMSData(true);
+  const logoUrl = initialData.settings?.logo_url || '/favicon.ico';
 
   return (
     <html lang="id" className="dark theme-gold scroll-smooth" suppressHydrationWarning>
+      <head>
+        <link rel="icon" href={logoUrl} />
+        <link rel="shortcut icon" href={logoUrl} />
+        <link rel="apple-touch-icon" href={logoUrl} />
+      </head>
       <body className="antialiased min-h-screen flex flex-col transition-colors duration-300" style={{ backgroundColor: 'var(--bg-primary)', color: 'var(--text-body)' }}>
         <ThemeProvider>
           <ClassDataProvider initialData={initialData}>

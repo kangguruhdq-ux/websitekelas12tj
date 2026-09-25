@@ -228,6 +228,32 @@ export function ClassDataProvider({
     refreshData(false);
   }, [refreshData, initialData]);
 
+  // Keep browser tab favicon in sync with site settings logo
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      const logoUrl = data.settings?.logo_url || '/favicon.ico';
+      const iconSelectors = ["link[rel~='icon']", "link[rel='shortcut icon']", "link[rel='apple-touch-icon']"];
+      
+      let foundAny = false;
+      iconSelectors.forEach((selector) => {
+        const link = document.querySelector<HTMLLinkElement>(selector);
+        if (link) {
+          foundAny = true;
+          if (link.getAttribute('href') !== logoUrl) {
+            link.setAttribute('href', logoUrl);
+          }
+        }
+      });
+
+      if (!foundAny) {
+        const newLink = document.createElement('link');
+        newLink.rel = 'icon';
+        newLink.href = logoUrl;
+        document.head.appendChild(newLink);
+      }
+    }
+  }, [data.settings?.logo_url]);
+
   // Generic POST action runner with optimistic update & rollback
   const runMutation = useCallback(
     async (action: string, payload: any): Promise<boolean> => {
